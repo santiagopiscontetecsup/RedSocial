@@ -11,6 +11,7 @@ import InputField from '@/components/ui/InputField';
 import CustomButton from '@/components/ui/CustomButton';
 import Colors from '@/constants/Colors';
 
+
 export default function RegisterScreen() {
   const router = useRouter();
   const [fullName, setFullName] = useState('');
@@ -20,10 +21,19 @@ export default function RegisterScreen() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
+  
   const handleRegister = () => {
     console.log('Registering user...');
-    // Add registration logic here
+    router.push({
+      pathname: '/registerStep2',
+      params: {
+        fullName,
+        email,
+        phone,
+        password,
+      },
+    });
+    
   };
 
   return (
