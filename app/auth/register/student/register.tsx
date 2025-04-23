@@ -25,7 +25,7 @@ export default function RegisterScreen() {
   const handleRegister = () => {
     console.log('Registering user...');
     router.push({
-      pathname: '/registerStep2',
+      pathname: '/auth/register/student/registerStep2',
       params: {
         fullName,
         email,

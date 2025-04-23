@@ -79,7 +79,7 @@ export default function LoginScreen() {
         ¿Aún no tienes una cuenta?{' '}
         <Text
           style={styles.registerLink}
-          onPress={() => router.push('/register')}
+          onPress={() => router.push('/auth/register/student/register')}
         >
           Regístrate ahora
         </Text>
@@ -88,10 +88,10 @@ export default function LoginScreen() {
       <View style={styles.roleButtons}>
         <CustomButton
           title="Estudiante"
-          onPress={() => router.push('/register')} // Redirige a la pantalla de registro
+          onPress={() => router.push('/auth/register/student/register')} // Redirige a la pantalla de registro
           small
         />
-        <CustomButton title="Empresa" onPress={() => {}} small />
+        {/* <CustomButton title="Empresa" onPress={() => {}} small /> */}
       </View>
     </ScrollView>
   );

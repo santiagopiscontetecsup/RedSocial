@@ -39,12 +39,12 @@ function AuthGate() {
   const segments = useSegments();
 
   useEffect(() => {
-    const inAuthGroup = segments[0] !== '(tabs)';
-
+    const inAuthGroup = segments[0] === 'auth';
+  
     if (!isAuthenticated && !inAuthGroup) {
-      router.replace('/login');
+      router.replace('/auth/login');
     } else if (isAuthenticated && inAuthGroup) {
-      router.replace('/(tabs)');
+      router.replace('/home'); // Cambia a la ruta inicial de las pestañas
     }
   }, [isAuthenticated]);
 

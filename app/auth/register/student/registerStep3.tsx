@@ -30,7 +30,7 @@ export default function RegisterStep3Screen() {
         phone,
         password,
         role,
-        skills: JSON.parse(skills),
+        skills,
         githubLink,
         isStudent,
         university,

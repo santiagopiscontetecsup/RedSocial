@@ -31,7 +31,7 @@ export default function RegisterStep2Screen() {
 
     // Navegar a RegisterStep3 con los datos seleccionados
     router.push({
-      pathname: '/registerStep3',
+      pathname: '/auth/register/student/registerStep3',
       params: {
         fullName,
         email,
