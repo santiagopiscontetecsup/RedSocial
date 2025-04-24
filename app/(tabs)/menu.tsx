@@ -2,8 +2,15 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Colors from '@/constants/Colors';
+import { useAuth } from '@/context/AuthContext'; // Importar el contexto de autenticación
 
 export default function MenuScreen() {
+  const { logout } = useAuth(); // Obtener la función de logout del contexto
+
+  const handleLogout = async () => {
+    await logout(); // Llamar a la función de logout
+  };
+
   return (
     <View style={styles.container}>
       {/* Header */}
@@ -40,8 +47,6 @@ export default function MenuScreen() {
           <Text style={styles.menuText}>Mis Certificados</Text>
         </TouchableOpacity>
 
-        
-
         <TouchableOpacity style={styles.menuItem}>
           <Ionicons name="search-outline" size={20} color={Colors.gray} />
           <Text style={styles.menuText}>Buscar Retos</Text>
@@ -52,11 +57,11 @@ export default function MenuScreen() {
           <Text style={styles.menuText}>Ajustes</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.menuItem}>
+        {/* Logout Button */}
+        <TouchableOpacity style={styles.menuItem} onPress={handleLogout}>
           <Ionicons name="log-out-outline" size={20} color={Colors.gray} />
           <Text style={styles.menuText}>Cerrar Sesión</Text>
         </TouchableOpacity>
-        
       </View>
     </View>
   );

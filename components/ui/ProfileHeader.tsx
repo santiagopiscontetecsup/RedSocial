@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Colors from '@/constants/Colors';
+import { router } from 'expo-router';
 
 
 type ProfileHeaderProps = {
@@ -35,7 +36,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
         <Text style={styles.circleButtonText}>4.7</Text>
         <Text style={styles.circleButtonSubtitle}>Rendimiento</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.circleButton} onPress={onViewCertificates}>
+      <TouchableOpacity style={styles.circleButton} onPress={() => router.push('/student/certificates')}>
         <Text style={styles.circleButtonText}>3</Text>
         <Text style={styles.circleButtonSubtitle}>Certificados</Text>
       </TouchableOpacity>

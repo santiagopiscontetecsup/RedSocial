@@ -1,52 +1,53 @@
+// filepath: c:\6 Semestre\Nueva carpeta\RedSocial\context\AuthContext.tsx
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 
 interface AuthContextType {
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: () => Promise<void>;
+  login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
 }
 
-
 const AuthContext = createContext<AuthContextType>({
-    isAuthenticated: false,
-    isLoading: true, // Añadir estado de carga
-    login: async () => {},
-    logout: async () => {},
-  });
-  
-  export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [isLoading, setIsLoading] = useState(true);
-  
-    const checkAuthState = useCallback(async () => {
-      try {
-        // Simular verificación de token
-        const fakeToken = false; // Cambiar a true solo para pruebas
-        setIsAuthenticated(fakeToken);
-      } finally {
-        setIsLoading(false);
-      }
-    }, []);
-  
-    useEffect(() => {
-      checkAuthState();
-    }, [checkAuthState]);
-  
-    // Resto del código...
+  isAuthenticated: false,
+  isLoading: true,
+  login: async () => {},
+  logout: async () => {},
+});
 
-  const login = useCallback(async () => {
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const checkAuthState = useCallback(async () => {
+    try {
+      // Simular verificación de token
+      const fakeToken = false; // Cambiar a true solo para pruebas
+      setIsAuthenticated(fakeToken);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    checkAuthState();
+  }, [checkAuthState]);
+
+  const login = useCallback(async (email: string, password: string) => {
     setIsLoading(true);
-    // Lógica real de autenticación aquí
-    await new Promise(resolve => setTimeout(resolve, 500));
-    setIsAuthenticated(true);
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    if (email === 'testuser@example.com' && password === 'password123') {
+      setIsAuthenticated(true);
+    } else {
+      alert('Credenciales incorrectas');
+    }
     setIsLoading(false);
   }, []);
 
   const logout = useCallback(async () => {
     setIsLoading(true);
-    // Lógica real de logout aquí
-    await new Promise(resolve => setTimeout(resolve, 500));
+    // Simular logout
+    await new Promise((resolve) => setTimeout(resolve, 500));
     setIsAuthenticated(false);
     setIsLoading(false);
   }, []);

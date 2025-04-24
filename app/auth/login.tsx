@@ -1,3 +1,4 @@
+// filepath: c:\6 Semestre\Nueva carpeta\RedSocial\app\auth\login.tsx
 import React, { useState } from 'react';
 import {
   View,
@@ -15,16 +16,21 @@ import Colors from '@/constants/Colors';
 
 export default function LoginScreen() {
   const router = useRouter();
-  const { login } = useAuth();
+  const { login } = useAuth(); // Extrae la función `login` del contexto
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleLogin = async () => {
+    setIsLoading(true);
     try {
-      login();
+      await login(email, password); // Llama a la función `login` del contexto
+      router.push('/home'); // Redirige al usuario a la pantalla principal
     } catch (error) {
       console.error(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -57,7 +63,7 @@ export default function LoginScreen() {
         </TouchableOpacity>
       </View>
 
-      <CustomButton title="Ingresar" onPress={handleLogin} />
+      <CustomButton title="Ingresar" onPress={handleLogin} isLoading={isLoading} />
 
       <View style={styles.dividerContainer}>
         <View style={styles.divider} />
@@ -91,7 +97,6 @@ export default function LoginScreen() {
           onPress={() => router.push('/auth/register/student/register')} // Redirige a la pantalla de registro
           small
         />
-        {/* <CustomButton title="Empresa" onPress={() => {}} small /> */}
       </View>
     </ScrollView>
   );

@@ -1,49 +1,38 @@
 /**
- * Below are the colors that are used in the app. The colors are defined in the light and dark mode.
- * There are many other ways to style your app. For example, [Nativewind](https://www.nativewind.dev/), [Tamagui](https://tamagui.dev/), [unistyles](https://reactnativeunistyles.vercel.app), etc.
+ * Color palette for the project.
+ * Organized by purpose and theme (light/dark).
  */
 
-const tintColorLight = '#0a7ea4';
-const tintColorDark = '#fff';
 const Colors = {
-  primary: '#2B65A9',
-  secondary: '#5A2EFF',
-  background: '#FFFFFF',
-  gray: '#888888',
-  lightGray: '#CCCCCC',
-  error: '#FF4C4C',
-  success: '#4CAF50',
-  inputBorder: '#D1D1D1',
+  // Core brand colors
+  primary: '#447097',        // Primary accent (buttons, links)
+  secondary: '#2F3A56',      // Secondary accent (headers, emphasis)
+
+  // Background and neutral tones
+  background: '#D6E6E6',     // Default background
+  gray: '#A8CED7',           // Neutral elements (e.g. cards)
+  lightGray: '#D6E6E6',      // Light variant for borders or highlights
+
+  // Status indicators
+  error: '#FF4C4C',          // Error messages, invalid inputs
+  success: '#4CAF50',        // Success messages, valid inputs
+
+  // Form elements
+  inputBorder: '#A8CED7',    // Input field borders
+
+  // Themed colors
   light: {
-    text: '#11181C',
-    background: '#fff',
-    tint: '#0a7ea4',
-    icon: '#687076',
+    text: '#2F3A56',         // Primary text color (light mode)
+    background: '#D6E6E6',   // Background (light mode)
+    tint: '#447097',         // Active elements (light mode)
+    icon: '#2F3A56',         // Icons (light mode)
   },
   dark: {
-    text: '#ECEDEE',
-    background: '#151718',
-    tint: '#fff',
-    icon: '#9BA1A6',
+    text: '#D6E6E6',         // Primary text color (dark mode)
+    background: '#2F3A56',   // Background (dark mode)
+    tint: '#A8CED7',         // Active elements (dark mode)
+    icon: '#A8CED7',         // Icons (dark mode)
   },
 };
 
 export default Colors;
-// export const Colors = {
-//   light: {
-//     text: '#11181C',
-//     background: '#fff',
-//     tint: tintColorLight,
-//     icon: '#687076',
-//     tabIconDefault: '#687076',
-//     tabIconSelected: tintColorLight,
-//   },
-//   dark: {
-//     text: '#ECEDEE',
-//     background: '#151718',
-//     tint: tintColorDark,
-//     icon: '#9BA1A6',
-//     tabIconDefault: '#9BA1A6',
-//     tabIconSelected: tintColorDark,
-//   },
-// };
