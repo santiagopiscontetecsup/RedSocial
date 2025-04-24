@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import Animated, { useSharedValue, useAnimatedStyle, withTiming } from 'react-native-reanimated';
 import InputField from '@/components/ui/InputField';
 import CustomButton from '@/components/ui/CustomButton';
 import Colors from '@/constants/Colors';
 import { useLocalSearchParams } from 'expo-router';
+import { registerUser } from '@/services/register/registerService';
 
 export default function RegisterStep3Screen() {
   const [githubLink, setGithubLink] = useState('');
@@ -13,6 +15,9 @@ export default function RegisterStep3Screen() {
   const [language, setLanguage] = useState('');
   const [otherLanguage, setOtherLanguage] = useState('');
 
+  const [showOtherLanguageInput, setShowOtherLanguageInput] = useState(false);
+  const animationHeight = useSharedValue(0); // Controla la altura del campo animado
+
   const {
     fullName,
     email,
@@ -21,28 +26,44 @@ export default function RegisterStep3Screen() {
     role,
     skills,
   } = useLocalSearchParams();
-  
-  const handleFinalize = async () => {
-    
-    const data = {
-        fullName,
-        email,
-        phone,
-        password,
-        role,
-        skills,
-        githubLink,
-        isStudent,
-        university,
-        career,
-        language,
-        otherLanguage,
-      };
-      console.log('Enviando datos al backend:', data);
 
-    // Add logic to finalize registration
+  const handleToggleOtherLanguageInput = () => {
+    setShowOtherLanguageInput(!showOtherLanguageInput);
+    animationHeight.value = showOtherLanguageInput ? withTiming(0) : withTiming(60); // Cambia la altura con animación
   };
-  
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    height: animationHeight.value,
+    opacity: animationHeight.value > 0 ? 1 : 0,
+  }));
+
+  const handleFinalize = async () => {
+    const data = {
+      fullName,
+      email,
+      phone,
+      password,
+      role,
+      skills,
+      githubLink,
+      isStudent,
+      university,
+      career,
+      language,
+      otherLanguage: showOtherLanguageInput ? otherLanguage : null,
+    };
+    console.log('Enviando datos al backend:', data);
+    
+    // descomenta solo para verificar el endpoint de registro
+    // try {
+    //   const response = await registerUser(data); // Llama a la función para registrar al usuario
+    //   console.log('Usuario registrado con éxito:', response);
+    //   alert('Registro exitoso');
+    // } catch (error: any) {
+    //   console.error('Error al registrar el usuario:', error.message);
+    //   alert(error.message || 'Error al registrar el usuario');
+    // }
+  };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -112,15 +133,27 @@ export default function RegisterStep3Screen() {
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Idiomas</Text>
         <InputField
-          placeholder="¿Qué idioma dominas?"
+          placeholder="¿Cual es tu idioma nativo?"
           value={language}
           onChangeText={setLanguage}
         />
-        <InputField
-          placeholder="¿Con qué otros idiomas sabes o trabajas?"
-          value={otherLanguage}
-          onChangeText={setOtherLanguage}
-        />
+        <TouchableOpacity
+          style={styles.toggleButton}
+          onPress={handleToggleOtherLanguageInput}
+        >
+          <Text style={styles.toggleButtonText}>
+            {showOtherLanguageInput ? 'Ocultar otros idiomas' : 'Sé otros idiomas'}
+          </Text>
+        </TouchableOpacity>
+        <Animated.View style={[styles.animatedContainer, animatedStyle]}>
+          {showOtherLanguageInput && (
+            <InputField
+              placeholder="¿Qué otros idiomas sabes?"
+              value={otherLanguage}
+              onChangeText={setOtherLanguage}
+            />
+          )}
+        </Animated.View>
       </View>
 
       <CustomButton title="Finalizar" onPress={handleFinalize} />
@@ -174,5 +207,18 @@ const styles = StyleSheet.create({
   },
   optionTextSelected: {
     color: '#fff',
+  },
+  toggleButton: {
+    marginTop: 10,
+    alignSelf: 'flex-start',
+  },
+  toggleButtonText: {
+    fontSize: 14,
+    color: Colors.primary,
+    textDecorationLine: 'underline',
+  },
+  animatedContainer: {
+    overflow: 'hidden',
+    marginTop: 10,
   },
 });

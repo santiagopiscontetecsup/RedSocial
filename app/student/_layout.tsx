@@ -15,6 +15,10 @@ export default function StudentLayout() {
         name="applications"
         options={{ headerShown: false }}
       />
+      <Stack.Screen
+        name="projects"
+        options={{ headerShown: false }} // Asegúrate de que el encabezado esté oculto
+      />
     </Stack>
   );
 }

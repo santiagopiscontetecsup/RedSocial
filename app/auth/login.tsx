@@ -13,6 +13,8 @@ import { useAuth } from '@/context/AuthContext';
 import CustomButton from '@/components/ui/CustomButton';
 import InputField from '@/components/ui/InputField';
 import Colors from '@/constants/Colors';
+import { loginUser } from '@/services/login/loginService';
+
 
 export default function LoginScreen() {
   const router = useRouter();
@@ -22,13 +24,31 @@ export default function LoginScreen() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+  // const handleLogin = async () => {
+  //   setIsLoading(true);
+  //   try {
+  //     await login(email, password); // Llama a la función `login` del contexto
+  //     router.push('/home'); // Redirige al usuario a la pantalla principal
+  //   } catch (error) {
+  //     console.error(error);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+  // descomentar para verificar el enddpoint de login
   const handleLogin = async () => {
     setIsLoading(true);
     try {
-      await login(email, password); // Llama a la función `login` del contexto
+      const data = { email, password };
+      const response = await loginUser(data); // Llama a la función para iniciar sesión
+      console.log('Inicio de sesión exitoso:', response);
+  
+      // Aquí puedes guardar el token o manejar la respuesta del backend
+      alert('Inicio de sesión exitoso');
       router.push('/home'); // Redirige al usuario a la pantalla principal
-    } catch (error) {
-      console.error(error);
+    } catch (error: any) {
+      console.error('Error al iniciar sesión:', error.message);
+      alert(error.message || 'Error al iniciar sesión');
     } finally {
       setIsLoading(false);
     }

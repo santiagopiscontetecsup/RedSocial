@@ -1,22 +1,29 @@
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { TouchableOpacity, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import Colors from '@/constants/Colors';
 
 const CustomButton = ({
   title,
   onPress,
   small = false,
+  isLoading = false, // Nueva propiedad
 }: {
   title: string;
   onPress: () => void;
   small?: boolean;
+  isLoading?: boolean; // Nueva propiedad
 }) => {
   return (
     <TouchableOpacity
-      style={[styles.button, small && styles.smallButton]}
-      onPress={onPress}
+      style={[styles.button, small && styles.smallButton, isLoading && styles.disabledButton]}
+      onPress={isLoading ? undefined : onPress} // Deshabilitar el botón si está cargando
+      disabled={isLoading} // Deshabilitar interacción si está cargando
     >
-      <Text style={[styles.text, small && styles.smallText]}>{title}</Text>
+      {isLoading ? (
+        <ActivityIndicator size="small" color="#fff" /> // Indicador de carga
+      ) : (
+        <Text style={[styles.text, small && styles.smallText]}>{title}</Text>
+      )}
     </TouchableOpacity>
   );
 };
@@ -44,5 +51,8 @@ const styles = StyleSheet.create({
   },
   smallText: {
     fontSize: 14,
+  },
+  disabledButton: {
+    backgroundColor: Colors.gray, // Cambiar el color del botón cuando está deshabilitado
   },
 });

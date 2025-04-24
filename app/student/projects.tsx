@@ -1,42 +1,11 @@
 import React from 'react';
-import { View, Text, StyleSheet, FlatList } from 'react-native';
-import Colors from '@/constants/Colors';
+import { View, Text, StyleSheet, Image, FlatList, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import ProfileHeader from '@/components/ui/ProfileHeader';
-
-const projects = [
-  {
-    id: 1,
-    title: 'Diseño de App Móvil para E-commerce',
-    date: '17/01/2025',
-    rating: 5,
-  },
-  {
-    id: 2,
-    title: 'Diseño de App Móvil para E-commerce',
-    date: '17/01/2025',
-    rating: 5,
-  },
-  {
-    id: 3,
-    title: 'Diseño de App Móvil para E-commerce',
-    date: '17/01/2025',
-    rating: 5,
-  },
-  {
-    id: 4,
-    title: 'Diseño de App Móvil para E-commerce',
-    date: '17/01/2025',
-    rating: 5,
-  },
-];
-
-const handleEditProfile = () => console.log('Edit profile picture');
-const handleViewCertificates = () => console.log('View certificates');
-const handleViewPerformance = () => console.log('View performance');
+import Colors from '@/constants/Colors';
+import { testProjects } from '@/data/user';
 
 export default function ProjectsScreen() {
-  const renderProject = ({ item }: { item: typeof projects[0] }) => (
+  const renderProject = ({ item }: { item: typeof testProjects[0] }) => (
     <View style={styles.projectCard}>
       <Text style={styles.projectDate}>{item.date}</Text>
       <Text style={styles.projectTitle}>{item.title}</Text>
@@ -50,22 +19,26 @@ export default function ProjectsScreen() {
 
   return (
     <View style={styles.container}>
-      {/* Componente perfil */}
-      <ProfileHeader
-        name="Alex Rodríguez"
-        email="alex@creativetech.com"
-        profilePicture="https://via.placeholder.com/100"
-        onEditProfile={handleEditProfile}
-        onViewPerformance={handleViewPerformance}
-        onViewCertificates={handleViewCertificates}
-      />
+      <View style={styles.headerImageContainer}>
+        <Image
+          source={{ uri: 'https://www1.tecsup.edu.pe/sites/default/files/branches/image_mini/lima_0.png' }}
+          style={styles.headerImage}
+        />
+        <View style={styles.avatarContainer}>
+          <Image
+            source={{ uri: 'https://www1.tecsup.edu.pe/sites/default/files/branches/image_mini/lima_0.png' }}
+            style={styles.avatar}
+          />
+          <TouchableOpacity style={styles.editAvatarButton}>
+            <Text style={styles.editAvatarText}>✎</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
 
-      {/* total de poryecto titulo */}
-      <Text style={styles.header}>Total de Proyectos: {projects.length}</Text>
-
-      {/* lista de proyectos */}
+      <Text style={styles.userName}>Alex Rodríguez</Text>
+      <Text style={styles.sectionTitle}>Proyectos</Text>
       <FlatList
-        data={projects}
+        data={testProjects}
         renderItem={renderProject}
         keyExtractor={(item) => item.id.toString()}
         contentContainerStyle={styles.listContainer}
@@ -78,15 +51,55 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    padding: 16,
   },
-  header: {
+  headerImageContainer: {
+    position: 'relative',
+  },
+  headerImage: {
+    width: '100%',
+    height: 150,
+  },
+  avatarContainer: {
+    position: 'absolute',
+    bottom: -40,
+    left: '50%',
+    transform: [{ translateX: -50 }],
+    alignItems: 'center',
+  },
+  avatar: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    borderWidth: 3,
+    borderColor: '#fff',
+  },
+  editAvatarButton: {
+    position: 'absolute',
+    bottom: 0,
+    right: -10,
+    backgroundColor: Colors.primary,
+    borderRadius: 12,
+    padding: 4,
+  },
+  editAvatarText: {
+    color: '#fff',
+    fontSize: 12,
+  },
+  userName: {
+    marginTop: 48,
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
+    marginTop: 32,
     marginBottom: 16,
     textAlign: 'center',
   },
   listContainer: {
+    paddingHorizontal: 16,
     gap: 12,
   },
   projectCard: {

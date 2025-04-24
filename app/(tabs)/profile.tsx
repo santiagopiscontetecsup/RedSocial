@@ -1,3 +1,4 @@
+import { router } from 'expo-router';
 import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
 
@@ -50,8 +51,8 @@ export default function ProfileScreen() {
       </View>
 
       {/* Botón para publicar retos */}
-      <TouchableOpacity style={styles.publishButton}>
-        <Text style={styles.publishButtonText}>Publicar Retos</Text>
+      <TouchableOpacity style={styles.publishButton} onPress={() => router.push('/student/projects')}>
+        <Text style={styles.publishButtonText}>Ver Proyectos</Text>
       </TouchableOpacity>
 
       {/* Lista de retos */}
