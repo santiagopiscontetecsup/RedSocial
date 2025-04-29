@@ -1,37 +1,30 @@
-// navigation/navbar.js
-import React from 'react';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import HomeScreen from '../screens/HomeScreen';
-import Icon from 'react-native-vector-icons/Ionicons';
 
-const Tab = createBottomTabNavigator();
+// import { createNativeStackNavigator } from '@react-navigation/native-stack';
+// import LoginScreen from '../screens/LoginScreen';
+// import RegisterScreen from '../screens/RegisterScreen';
+// import HomeScreen from '../screens/HomeScreen';
 
-const Navbar = () => {
-  return (
-    <Tab.Navigator
-      screenOptions={({ route }) => ({
-        tabBarIcon: ({ focused, color, size }) => {
-          let iconName;
+// const Stack = createNativeStackNavigator();
 
-          if (route.name === 'Inicio') {
-            iconName = focused ? 'home' : 'home-outline';
-          } else if (route.name === 'Notificaciones') {
-            iconName = focused ? 'notifications' : 'notifications-outline';
-          } else if (route.name === 'Menú') {
-            iconName = focused ? 'menu' : 'menu-outline';
-          }
+// export const MainNavigator = () => {
+//   return (
+//     <Stack.Navigator initialRouteName="Login">
+//       <Stack.Screen
+//         name="Login"
+//         component={LoginScreen}
+//         options={{ headerShown: false }}
+//       />
+//       <Stack.Screen
+//         name="Register"
+//         component={RegisterScreen}
+//         options={{ title: 'Crear cuenta' }}
+//       />
+//       <Stack.Screen
+//         name="Home"
+//         component={HomeScreen}
+//         options={{ headerShown: false }}
+//       />
+//     </Stack.Navigator>
+//   );
+// };
 
-          return <Icon name={iconName} size={size} color={color} />;
-        },
-        tabBarActiveTintColor: '#000',
-        tabBarInactiveTintColor: 'gray',
-      })}
-    >
-      <Tab.Screen name="Inicio" component={HomeScreen} options={{ headerShown: false }} />
-      <Tab.Screen name="Notificaciones" component={HomeScreen} options={{ headerShown: false }} />
-      <Tab.Screen name="Menú" component={HomeScreen} options={{ headerShown: false }} />
-    </Tab.Navigator>
-  );
-};
-
-export default Navbar;
