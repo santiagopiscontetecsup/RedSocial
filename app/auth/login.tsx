@@ -24,6 +24,7 @@ export default function LoginScreen() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+  // descomentar para pobrar en local
   // const handleLogin = async () => {
   //   setIsLoading(true);
   //   try {

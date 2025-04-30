@@ -6,30 +6,31 @@ import CustomButton from '@/components/ui/CustomButton';
 import Colors from '@/constants/Colors';
 import { useLocalSearchParams } from 'expo-router';
 import { registerUser } from '@/services/register/registerService';
+import { universidades, carreras } from '@/data/registo';
 
 export default function RegisterStep3Screen() {
   const [githubLink, setGithubLink] = useState('');
   const [isStudent, setIsStudent] = useState(true);
-  const [university, setUniversity] = useState('');
-  const [career, setCareer] = useState('');
+  const [selectedUniversity, setSelectedUniversity] = useState('');
+  const [selectedCareer, setSelectedCareer] = useState('');
   const [language, setLanguage] = useState('');
+  const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
   const [otherLanguage, setOtherLanguage] = useState('');
 
   const [showOtherLanguageInput, setShowOtherLanguageInput] = useState(false);
-  const animationHeight = useSharedValue(0); // Controla la altura del campo animado
+  const animationHeight = useSharedValue(0);
 
-  const {
-    fullName,
-    email,
-    phone,
-    password,
-    role,
-    skills,
-  } = useLocalSearchParams();
+  const { fullName, email, phone, password } = useLocalSearchParams();
+
+  const toggleLanguage = (lang: string) => {
+    setSelectedLanguages((prev) =>
+      prev.includes(lang) ? prev.filter((l) => l !== lang) : [...prev, lang]
+    );
+  };
 
   const handleToggleOtherLanguageInput = () => {
     setShowOtherLanguageInput(!showOtherLanguageInput);
-    animationHeight.value = showOtherLanguageInput ? withTiming(0) : withTiming(60); // Cambia la altura con animación
+    animationHeight.value = showOtherLanguageInput ? withTiming(0) : withTiming(60);
   };
 
   const animatedStyle = useAnimatedStyle(() => ({
@@ -38,31 +39,30 @@ export default function RegisterStep3Screen() {
   }));
 
   const handleFinalize = async () => {
+    const [firstName, lastName] = (fullName as string).split(' ', 2);
     const data = {
-      fullName,
       email,
-      phone,
       password,
-      role,
-      skills,
-      githubLink,
-      isStudent,
-      university,
-      career,
-      language,
-      otherLanguage: showOtherLanguageInput ? otherLanguage : null,
+      estudiante: {
+        nombre: firstName || '',
+        apellido: lastName || '',
+        telefono: phone,
+        idUniversidad: parseInt(selectedUniversity) || 0,
+        idCarrera: parseInt(selectedCareer) || 0,
+        idiomas: selectedLanguages,
+      },
     };
+
     console.log('Enviando datos al backend:', data);
-    
-    // descomenta solo para verificar el endpoint de registro
-    // try {
-    //   const response = await registerUser(data); // Llama a la función para registrar al usuario
-    //   console.log('Usuario registrado con éxito:', response);
-    //   alert('Registro exitoso');
-    // } catch (error: any) {
-    //   console.error('Error al registrar el usuario:', error.message);
-    //   alert(error.message || 'Error al registrar el usuario');
-    // }
+
+    try {
+      const response = await registerUser(data);
+      console.log('Usuario registrado con éxito:', response);
+      alert('Registro exitoso');
+    } catch (error: any) {
+      console.error('Error al registrar el usuario:', error.message);
+      alert(error.message || 'Error al registrar el usuario');
+    }
   };
 
   return (
@@ -82,78 +82,90 @@ export default function RegisterStep3Screen() {
       </View>
 
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Sobre ti</Text>
-        <Text style={styles.sectionSubtitle}>¿Eres estudiante o Egresado?</Text>
+        <Text style={styles.sectionTitle}>Universidad o Instituto</Text>
+        <Text style={styles.sectionSubtitle}>Selecciona tu universidad</Text>
         <View style={styles.optionsContainer}>
-          <TouchableOpacity
-            style={[
-              styles.optionButton,
-              isStudent && styles.optionButtonSelected,
-            ]}
-            onPress={() => setIsStudent(true)}
-          >
-            <Text
+          {universidades.map((uni) => (
+            <TouchableOpacity
+              key={uni.id}
               style={[
-                styles.optionText,
-                isStudent && styles.optionTextSelected,
+                styles.optionButton,
+                selectedUniversity === uni.id.toString() && styles.optionButtonSelected,
               ]}
+              onPress={() => setSelectedUniversity(uni.id.toString())}
             >
-              Estudiante
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[
-              styles.optionButton,
-              !isStudent && styles.optionButtonSelected,
-            ]}
-            onPress={() => setIsStudent(false)}
-          >
-            <Text
-              style={[
-                styles.optionText,
-                !isStudent && styles.optionTextSelected,
-              ]}
-            >
-              Egresado
-            </Text>
-          </TouchableOpacity>
+              <Text
+                style={[
+                  styles.optionText,
+                  selectedUniversity === uni.id.toString() && styles.optionTextSelected,
+                ]}
+              >
+                {uni.nombre}
+              </Text>
+            </TouchableOpacity>
+          ))}
         </View>
-        <InputField
-          placeholder="¿De qué universidad o Instituto eres?"
-          value={university}
-          onChangeText={setUniversity}
-        />
-        <InputField
-          placeholder="¿Qué carrera estudias?"
-          value={career}
-          onChangeText={setCareer}
-        />
+      </View>
+
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Carrera</Text>
+        <Text style={styles.sectionSubtitle}>Selecciona tu carrera</Text>
+        <View style={styles.optionsContainer}>
+          {carreras.map((carrera) => (
+            <TouchableOpacity
+              key={carrera.id}
+              style={[
+                styles.optionButton,
+                selectedCareer === carrera.id.toString() && styles.optionButtonSelected,
+              ]}
+              onPress={() => setSelectedCareer(carrera.id.toString())}
+            >
+              <Text
+                style={[
+                  styles.optionText,
+                  selectedCareer === carrera.id.toString() && styles.optionTextSelected,
+                ]}
+              >
+                {carrera.nombre}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
       </View>
 
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Idiomas</Text>
-        <InputField
-          placeholder="¿Cual es tu idioma nativo?"
-          value={language}
-          onChangeText={setLanguage}
-        />
-        <TouchableOpacity
-          style={styles.toggleButton}
-          onPress={handleToggleOtherLanguageInput}
-        >
-          <Text style={styles.toggleButtonText}>
-            {showOtherLanguageInput ? 'Ocultar otros idiomas' : 'Sé otros idiomas'}
-          </Text>
-        </TouchableOpacity>
-        <Animated.View style={[styles.animatedContainer, animatedStyle]}>
-          {showOtherLanguageInput && (
+        <Text style={styles.sectionSubtitle}>Selecciona uno o más idiomas</Text>
+        <View style={styles.optionsContainer}>
+          {['Español', 'Inglés', 'Francés', 'Alemán', 'Otro'].map((lang) => (
+            <TouchableOpacity
+              key={lang}
+              style={[
+                styles.optionButton,
+                selectedLanguages.includes(lang) && styles.optionButtonSelected,
+              ]}
+              onPress={() => toggleLanguage(lang)}
+            >
+              <Text
+                style={[
+                  styles.optionText,
+                  selectedLanguages.includes(lang) && styles.optionTextSelected,
+                ]}
+              >
+                {lang}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+        {selectedLanguages.includes('Otro') && (
+          <Animated.View style={[styles.animatedContainer, animatedStyle]}>
             <InputField
-              placeholder="¿Qué otros idiomas sabes?"
+              placeholder="Especifica otro idioma"
               value={otherLanguage}
               onChangeText={setOtherLanguage}
             />
-          )}
-        </Animated.View>
+          </Animated.View>
+        )}
       </View>
 
       <CustomButton title="Finalizar" onPress={handleFinalize} />
@@ -188,8 +200,8 @@ const styles = StyleSheet.create({
   },
   optionsContainer: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     gap: 10,
-    marginBottom: 12,
   },
   optionButton: {
     borderWidth: 1,
@@ -197,6 +209,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     paddingVertical: 8,
     paddingHorizontal: 16,
+    marginBottom: 10,
   },
   optionButtonSelected: {
     backgroundColor: Colors.primary,
@@ -207,15 +220,6 @@ const styles = StyleSheet.create({
   },
   optionTextSelected: {
     color: '#fff',
-  },
-  toggleButton: {
-    marginTop: 10,
-    alignSelf: 'flex-start',
-  },
-  toggleButtonText: {
-    fontSize: 14,
-    color: Colors.primary,
-    textDecorationLine: 'underline',
   },
   animatedContainer: {
     overflow: 'hidden',

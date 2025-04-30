@@ -17,12 +17,21 @@ export default function MenuScreen() {
     router.push('/profile'); // te manda a la pantalla de perfil
   }
 
+  const handleGoToNotifications = () => {
+    router.push('/notifications'); // te manda a la pantalla de notificaciones
+  }
+
+  const handleGoToCertificates = () => {
+    router.push('/student/certificates'); // te manda a la pantalla de certificados
+  }
+
+
   return (
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
         <Image
-          source={{ uri: 'https://via.placeholder.com/150' }} // Replace with your logo URL
+          source={{ uri: 'https://classic.battle.net/war3/images/neutral/units/portraits/pandarenbrewmaster.gif' }} // Replace with your logo URL
           style={styles.logo}
         />
       </View>
@@ -37,7 +46,7 @@ export default function MenuScreen() {
 
       {/* Menu Options */}
       <View style={styles.menuContainer}>
-        <TouchableOpacity style={styles.menuItem}>
+        <TouchableOpacity style={styles.menuItem} onPress= {handleGoToNotifications}>
           <Ionicons name="notifications-outline" size={20} color={Colors.gray} />
           <Text style={styles.menuText}>Notificaciones</Text>
           <Text style={styles.badge}>24</Text>
@@ -48,7 +57,7 @@ export default function MenuScreen() {
           <Text style={styles.menuText}>Mis Proyectos</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.menuItem}>
+        <TouchableOpacity style={styles.menuItem} onPress={handleGoToCertificates}>
           <Ionicons name="ribbon-outline" size={20} color={Colors.gray} />
           <Text style={styles.menuText}>Mis Certificados</Text>
         </TouchableOpacity>

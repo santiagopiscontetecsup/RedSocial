@@ -1,61 +1,30 @@
 import React from 'react';
-import { View, Text, StyleSheet, FlatList, Image } from 'react-native';
-import Colors from '@/constants/Colors';
+import { View, Text, StyleSheet, FlatList } from 'react-native';
 import ProfileHeader from '@/components/ui/ProfileHeader';
-
-const certificates = [
-  {
-    id: 1,
-    title: 'Certificado en Diseño UX/UI Avanzado',
-    organization: 'Universidad Digital',
-    date: '17/01/2025',
-    description: '“Diseño limpio y bien estructurado”',
-    image: 'https://via.placeholder.com/150',
-  },
-  {
-    id: 2,
-    title: 'Certificado en Investigación de Usuarios',
-    organization: 'Platzi',
-    date: '17/01/2025',
-    description: '“Gran capacidad de análisis y resolución de problemas”',
-    image: 'https://via.placeholder.com/150',
-  },
-  {
-    id: 3,
-    title: 'Curso de Prototipado con Figma',
-    organization: 'Google UX Design',
-    date: '17/01/2025',
-    description: '“Muy responsable y creativo ante los retos”',
-    image: 'https://via.placeholder.com/150',
-  },
-];
-
-const handleEditProfile = () => console.log('Edit profile picture');
-const handleViewCertificates = () => console.log('View certificates');
-const handleViewPerformance = () => console.log('View performance');
-
+import Certificado from '@/components/ui/Certificado';
+import certificates from '@/data/certificados';
 
 export default function CertificatesScreen() {
   const renderCertificate = ({ item }: { item: typeof certificates[0] }) => (
-    <View style={styles.card}>
-      <Image source={{ uri: item.image }} style={styles.image} />
-      <Text style={styles.description}>{item.description}</Text>
-      <Text style={styles.title}>{item.title}</Text>
-      <Text style={styles.organization}>{item.organization}</Text>
-      <Text style={styles.date}>{item.date}</Text>
-    </View>
+    <Certificado
+      title={item.title}
+      organization={item.organization}
+      image={require('@/assets/images/certificado.png')} // Usando la imagen local
+      description={item.description}
+    />
   );
 
   return (
     <View style={styles.container}>
       <ProfileHeader
-              name="Alex Rodríguez"
-              email="alex@creativetech.com"
-              profilePicture="https://via.placeholder.com/100"
-              onEditProfile={handleEditProfile}
-              onViewPerformance={handleViewPerformance}
-              onViewCertificates={handleViewCertificates}
-            />
+        backgroundImage="https://www1.tecsup.edu.pe/sites/default/files/branches/image_mini/lima_0.png"
+        profileImage="https://www1.tecsup.edu.pe/sites/default/files/branches/image_mini/lima_0.png"
+        userName="Alex Rodríguez"
+        performanceScore="4.7"
+        certificatesCount={certificates.length.toString()}
+        onEditProfile={() => console.log('Edit profile picture')}
+        onViewCertificates={() => console.log('View certificates')}
+      />
       <Text style={styles.header}>Mis Certificados</Text>
       <FlatList
         data={certificates}
@@ -71,7 +40,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    padding: 16,
   },
   header: {
     fontSize: 22,
@@ -80,40 +48,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   list: {
+    paddingHorizontal: 16,
     gap: 16,
-  },
-  card: {
-    backgroundColor: Colors.lightGray,
-    borderRadius: 12,
-    padding: 16,
-    alignItems: 'center',
-  },
-  image: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    marginBottom: 8,
-  },
-  description: {
-    fontSize: 14,
-    fontStyle: 'italic',
-    color: Colors.gray,
-    marginBottom: 8,
-    textAlign: 'center',
-  },
-  title: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 4,
-    textAlign: 'center',
-  },
-  organization: {
-    fontSize: 14,
-    color: Colors.gray,
-    marginBottom: 4,
-  },
-  date: {
-    fontSize: 12,
-    color: Colors.gray,
   },
 });

@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
-import SearchBar from '@/components/ui/SearchBar';
+import AnimatedSearchBar from '@/components/ui/AnimatedSearchBar';
 import Card from '@/components/ui/Card';
 
 export default function HomeScreen() {
@@ -25,7 +25,7 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      <SearchBar placeholder="Search" />
+      <AnimatedSearchBar placeholder="Buscar proyectos" />
       <Text style={styles.subtitle}>Buscador de proyectos Freelance</Text>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         {projects.map((project) => (

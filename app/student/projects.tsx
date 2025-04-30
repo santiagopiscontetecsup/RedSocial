@@ -1,19 +1,18 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, FlatList, TouchableOpacity } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 import Colors from '@/constants/Colors';
 import { testProjects } from '@/data/user';
+import ProjectCard from '@/components/ui/ProjectCard';
 
 export default function ProjectsScreen() {
   const renderProject = ({ item }: { item: typeof testProjects[0] }) => (
-    <View style={styles.projectCard}>
-      <Text style={styles.projectDate}>{item.date}</Text>
-      <Text style={styles.projectTitle}>{item.title}</Text>
-      <View style={styles.projectRating}>
-        {[...Array(item.rating)].map((_, index) => (
-          <Ionicons key={index} name="star" size={16} color={Colors.primary} />
-        ))}
-      </View>
+    <View style={styles.projectWrapper}>
+      <ProjectCard
+        image={{ uri: 'https://adpmx.com/storage/2023/08/ficha_1920x1080-copiaiStock-1274417553-1-1024x576.jpg' }} // Imagen de fondo
+        title={item.title}
+        date={item.date}
+        rating={item.rating}
+      />
     </View>
   );
 
@@ -29,9 +28,7 @@ export default function ProjectsScreen() {
             source={{ uri: 'https://www1.tecsup.edu.pe/sites/default/files/branches/image_mini/lima_0.png' }}
             style={styles.avatar}
           />
-          <TouchableOpacity style={styles.editAvatarButton}>
-            <Text style={styles.editAvatarText}>✎</Text>
-          </TouchableOpacity>
+          
         </View>
       </View>
 
@@ -42,6 +39,7 @@ export default function ProjectsScreen() {
         renderItem={renderProject}
         keyExtractor={(item) => item.id.toString()}
         contentContainerStyle={styles.listContainer}
+        numColumns={2} // Configuración para mostrar 2 columnas
       />
     </View>
   );
@@ -81,10 +79,6 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 4,
   },
-  editAvatarText: {
-    color: '#fff',
-    fontSize: 12,
-  },
   userName: {
     marginTop: 48,
     fontSize: 20,
@@ -102,22 +96,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     gap: 12,
   },
-  projectCard: {
-    backgroundColor: Colors.lightGray,
-    borderRadius: 12,
-    padding: 16,
-  },
-  projectDate: {
-    fontSize: 12,
-    color: Colors.gray,
-    marginBottom: 4,
-  },
-  projectTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 8,
-  },
-  projectRating: {
-    flexDirection: 'row',
+  projectWrapper: {
+    flex: 1,
+    margin: 8, // Espaciado entre los proyectos
   },
 });
