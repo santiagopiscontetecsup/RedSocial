@@ -1,107 +1,7 @@
-// import React from 'react';
-// import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
-// import { Ionicons } from '@expo/vector-icons';
-// import Colors from '@/constants/Colors';
-// import { router } from 'expo-router';
-
-
-// type ProfileHeaderProps = {
-//   name: string;
-//   email: string;
-//   profilePicture: string;
-//   onEditProfile: () => void;
-//   onViewPerformance: () => void;
-//   onViewCertificates: () => void;
-// };
-
-// const ProfileHeader: React.FC<ProfileHeaderProps> = ({
-//   name,
-//   email,
-//   profilePicture,
-//   onEditProfile,
-//   onViewPerformance,
-//   onViewCertificates,
-// }) => (
-//   <View style={styles.headerContainer}>
-//     <View style={styles.profilePictureContainer}>
-//       <Image source={{ uri: profilePicture }} style={styles.profilePicture} />
-//       <TouchableOpacity style={styles.editIcon} onPress={onEditProfile}>
-//         <Ionicons name="pencil" size={16} color="#fff" />
-//       </TouchableOpacity>
-//     </View>
-//     <Text style={styles.name}>{name}</Text>
-//     <Text style={styles.email}>{email}</Text>
-//     <View style={styles.headerButtons}>
-//       <TouchableOpacity style={styles.circleButton} onPress={onViewPerformance}>
-//         <Text style={styles.circleButtonText}>4.7</Text>
-//         <Text style={styles.circleButtonSubtitle}>Rendimiento</Text>
-//       </TouchableOpacity>
-//       <TouchableOpacity style={styles.circleButton} onPress={() => router.push('/student/certificates')}>
-//         <Text style={styles.circleButtonText}>3</Text>
-//         <Text style={styles.circleButtonSubtitle}>Certificados</Text>
-//       </TouchableOpacity>
-//     </View>
-//   </View>
-// );
-
-// const styles = StyleSheet.create({
-//   headerContainer: {
-//     alignItems: 'center',
-//     marginBottom: 24,
-//   },
-//   profilePictureContainer: {
-//     position: 'relative',
-//   },
-//   profilePicture: {
-//     width: 100,
-//     height: 100,
-//     borderRadius: 50,
-//   },
-//   editIcon: {
-//     position: 'absolute',
-//     bottom: 0,
-//     right: 0,
-//     backgroundColor: Colors.primary,
-//     borderRadius: 12,
-//     padding: 4,
-//   },
-//   name: {
-//     fontSize: 20,
-//     fontWeight: 'bold',
-//     marginTop: 8,
-//   },
-//   email: {
-//     fontSize: 14,
-//     color: Colors.gray,
-//     marginBottom: 16,
-//   },
-//   headerButtons: {
-//     flexDirection: 'row',
-//     gap: 16,
-//   },
-//   circleButton: {
-//     alignItems: 'center',
-//     justifyContent: 'center',
-//     width: 80,
-//     height: 80,
-//     borderRadius: 40,
-//     backgroundColor: Colors.lightGray,
-//   },
-//   circleButtonText: {
-//     fontSize: 18,
-//     fontWeight: 'bold',
-//     color: Colors.primary,
-//   },
-//   circleButtonSubtitle: {
-//     fontSize: 12,
-//     color: Colors.gray,
-//   },
-// });
-
-// export default ProfileHeader;
-
-import React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, Image, TouchableOpacity, Alert } from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
+import Colors from '@/constants/Colors'; // Importa Colors
 
 type ProfileHeaderProps = {
   backgroundImage: string;
@@ -109,8 +9,10 @@ type ProfileHeaderProps = {
   userName: string;
   performanceScore: string;
   certificatesCount: string;
-  onEditProfile: () => void;
+  isEditable?: boolean;
+  onEditProfile?: (newImage: string) => void;
   onViewCertificates: () => void;
+  onEditInfo?: () => void; // Nueva propiedad para manejar la navegación al editar información
 };
 
 export default function ProfileHeader({
@@ -119,33 +21,62 @@ export default function ProfileHeader({
   userName,
   performanceScore,
   certificatesCount,
+  isEditable = false,
   onEditProfile,
   onViewCertificates,
+  onEditInfo, // Recibe la función para manejar la navegación
 }: ProfileHeaderProps) {
+  const [avatar, setAvatar] = useState(profileImage);
+
+  const handleEditAvatar = async () => {
+    if (!onEditProfile) return;
+
+    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+    if (!permissionResult.granted) {
+      Alert.alert('Permiso denegado', 'Se necesita acceso a la galería para cambiar el avatar.');
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      const selectedImage = result.assets[0].uri;
+      setAvatar(selectedImage);
+      onEditProfile(selectedImage);
+    }
+  };
+
   return (
     <View>
-      {/* Header con imagen de fondo */}
       <View style={styles.headerImageContainer}>
         <Image source={{ uri: backgroundImage }} style={styles.headerImage} />
         <View style={styles.avatarContainer}>
-          {/* Tarjetas circulares */}
           <View style={styles.circleCardLeft}>
             <Text style={styles.circleCardText}>{performanceScore}</Text>
             <Text style={styles.circleCardSubtitle}>Rendimiento</Text>
           </View>
-          <Image source={{ uri: profileImage }} style={styles.avatar} />
-          <TouchableOpacity style={styles.editAvatarButton} onPress={onEditProfile}>
-            <Text style={styles.editAvatarText}>✎</Text>
-          </TouchableOpacity>
+          <Image source={{ uri: avatar }} style={styles.avatar} />
+          {isEditable && (
+            <TouchableOpacity style={styles.editAvatarButton} onPress={handleEditAvatar}>
+              <Text style={styles.editAvatarText}>✎</Text>
+            </TouchableOpacity>
+          )}
           <TouchableOpacity style={styles.circleCardRight} onPress={onViewCertificates}>
             <Text style={styles.circleCardText}>{certificatesCount}</Text>
             <Text style={styles.circleCardSubtitle}>Certificados</Text>
           </TouchableOpacity>
         </View>
       </View>
-
-      {/* Nombre */}
-      <Text style={styles.userName}>{userName}</Text>
+      {/* Nombre interactivo */}
+      <TouchableOpacity onPress={onEditInfo}>
+        <Text style={styles.userName}>{userName}</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -163,7 +94,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 30, // separa las tarjetas del avatar
+    gap: 30,
   },
   avatar: {
     width: 90,
@@ -191,6 +122,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     textAlign: 'center',
+    color: Colors.primary, // Color destacado para el nombre
   },
   circleCardLeft: {
     width: 70,
