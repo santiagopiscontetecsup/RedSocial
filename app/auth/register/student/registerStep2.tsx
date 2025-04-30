@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput } from 'react-native';
+import Animated, { useSharedValue, useAnimatedStyle, withTiming } from 'react-native-reanimated';
 import { useRouter } from 'expo-router';
 import CustomButton from '@/components/ui/CustomButton';
 import Colors from '@/constants/Colors';
@@ -16,7 +17,7 @@ export default function RegisterStep2Screen() {
   const skills = ['Swift', 'Java', 'Python', '.NET', 'React', 'Otro'];
 
   const { fullName, email, phone, password } = useLocalSearchParams();
-  
+
   const toggleSkill = (skill: string) => {
     setSelectedSkills((prev) =>
       prev.includes(skill) ? prev.filter((s) => s !== skill) : [...prev, skill]
@@ -41,7 +42,34 @@ export default function RegisterStep2Screen() {
         skills: JSON.stringify(finalSkills),
       },
     });
-    
+  };
+
+  // Animación para los botones de roles
+  const roleAnimation = useSharedValue(1);
+  const roleAnimatedStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: roleAnimation.value }],
+    opacity: roleAnimation.value,
+  }));
+
+  const handleRolePress = (role: string) => {
+    setSelectedRole(role);
+    roleAnimation.value = withTiming(1.1, { duration: 200 }, () => {
+      roleAnimation.value = withTiming(1, { duration: 200 });
+    });
+  };
+
+  // Animación para los botones de habilidades
+  const skillAnimation = useSharedValue(1);
+  const skillAnimatedStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: skillAnimation.value }],
+    opacity: skillAnimation.value,
+  }));
+
+  const handleSkillPress = (skill: string) => {
+    toggleSkill(skill);
+    skillAnimation.value = withTiming(1.1, { duration: 200 }, () => {
+      skillAnimation.value = withTiming(1, { duration: 200 });
+    });
   };
 
   return (
@@ -55,23 +83,24 @@ export default function RegisterStep2Screen() {
         </Text>
         <View style={styles.optionsContainer}>
           {roles.map((role) => (
-            <TouchableOpacity
-              key={role}
-              style={[
-                styles.optionButton,
-                selectedRole === role && styles.optionButtonSelected,
-              ]}
-              onPress={() => setSelectedRole(role)}
-            >
-              <Text
+            <Animated.View key={role} style={roleAnimatedStyle}>
+              <TouchableOpacity
                 style={[
-                  styles.optionText,
-                  selectedRole === role && styles.optionTextSelected,
+                  styles.optionButton,
+                  selectedRole === role && styles.optionButtonSelected,
                 ]}
+                onPress={() => handleRolePress(role)}
               >
-                {role}
-              </Text>
-            </TouchableOpacity>
+                <Text
+                  style={[
+                    styles.optionText,
+                    selectedRole === role && styles.optionTextSelected,
+                  ]}
+                >
+                  {role}
+                </Text>
+              </TouchableOpacity>
+            </Animated.View>
           ))}
         </View>
         {selectedRole === 'Otro' && (
@@ -91,23 +120,24 @@ export default function RegisterStep2Screen() {
         </Text>
         <View style={styles.optionsContainer}>
           {skills.map((skill) => (
-            <TouchableOpacity
-              key={skill}
-              style={[
-                styles.optionButton,
-                selectedSkills.includes(skill) && styles.optionButtonSelected,
-              ]}
-              onPress={() => toggleSkill(skill)}
-            >
-              <Text
+            <Animated.View key={skill} style={skillAnimatedStyle}>
+              <TouchableOpacity
                 style={[
-                  styles.optionText,
-                  selectedSkills.includes(skill) && styles.optionTextSelected,
+                  styles.optionButton,
+                  selectedSkills.includes(skill) && styles.optionButtonSelected,
                 ]}
+                onPress={() => handleSkillPress(skill)}
               >
-                {skill}
-              </Text>
-            </TouchableOpacity>
+                <Text
+                  style={[
+                    styles.optionText,
+                    selectedSkills.includes(skill) && styles.optionTextSelected,
+                  ]}
+                >
+                  {skill}
+                </Text>
+              </TouchableOpacity>
+            </Animated.View>
           ))}
         </View>
         {selectedSkills.includes('Otro') && (

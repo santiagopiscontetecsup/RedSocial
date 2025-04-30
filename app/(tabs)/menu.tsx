@@ -3,14 +3,20 @@ import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Colors from '@/constants/Colors';
 import { useAuth } from '@/context/AuthContext'; // Importar el contexto de autenticación
-import { router } from 'expo-router';
+import { useRouter } from 'expo-router';
+
 
 export default function MenuScreen() {
   const { logout } = useAuth(); // Obtener la función de logout del contexto
+  const router = useRouter(); // Importar el enrutador de Expo Router
 
   const handleLogout = async () => {
     await logout(); // Llamar a la función de logout
   };
+
+  const handleGoToProfile = () =>{
+    router.push('/profile'); // te manda a la pantalla de perfil
+  }
 
   return (
     <View style={styles.container}>
@@ -25,7 +31,7 @@ export default function MenuScreen() {
       <View style={styles.divider} />
 
       {/* User Account Section */}
-      <TouchableOpacity style={styles.menuItem}>
+      <TouchableOpacity style={styles.menuItem} onPress={handleGoToProfile}>
         <Ionicons name="person-circle" size={24} color={Colors.gray} />
         <Text style={styles.accountText}>Mi Cuenta</Text>
       </TouchableOpacity>
