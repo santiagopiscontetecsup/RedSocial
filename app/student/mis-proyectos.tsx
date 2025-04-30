@@ -6,28 +6,25 @@ import projects from '../../data/projects'; // Importar proyectos
 type Project = typeof projects[0]; // Definir el tipo Project basándonos en la estructura de tu data
 
 export default function MisProyectosScreen() {
-  const { proyectosPostulados } = useProjectContext();
-
-  // Función para renderizar cada proyecto
-  const renderProyecto = (proyecto: Project) => (
-    <View style={styles.card} key={proyecto.id}>
-      <Text style={styles.title}>{proyecto.title}</Text>
-      <Text style={styles.estado}>
-        Estado: {proyecto.status === 'pendiente' ? '⏳ Pendiente' : '✅ Completado'}
-      </Text>
-      <TouchableOpacity style={styles.button}>
-        <Text style={styles.buttonText}>Ver detalles</Text>
-      </TouchableOpacity>
-    </View>
-  );
+  const { proyectosAceptados } = useProjectContext(); // 👈 Cambio aquí
 
   return (
     <View style={styles.container}>
-      <Text style={styles.sectionTitle}>🟡 Mis Proyectos Postulados</Text>
+      <Text style={styles.sectionTitle}>✅ Mis Proyectos Aceptados</Text>
       <FlatList
-        data={proyectosPostulados}
+        data={proyectosAceptados}
         keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => renderProyecto(item)}
+        renderItem={({ item }) => (
+          <View style={styles.card} key={item.id}>
+            <Text style={styles.title}>{item.title}</Text>
+            <Text style={styles.estado}>
+              Estado: {item.status === 'completado' ? '✅ Aceptado' : '⏳ Pendiente'}
+            </Text>
+            <TouchableOpacity style={styles.button}>
+              <Text style={styles.buttonText}>Ver detalles</Text>
+            </TouchableOpacity>
+          </View>
+        )}
       />
     </View>
   );
