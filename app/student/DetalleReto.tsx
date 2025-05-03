@@ -2,24 +2,35 @@ import React from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { MaterialIcons, FontAwesome, Entypo } from '@expo/vector-icons';
-import projects from '../../data/projects';
-import { useProjectContext } from '@/context/ProjectContext'; // 👈 Importa el contexto
+import projects from '../../data/projects'; // Importación de proyectos sin el tipo Project
+import { useProjectContext } from '@/context/ProjectContext';
 
 const DetalleReto = () => {
   const { id } = useLocalSearchParams();
   const projectId = Array.isArray(id) ? parseInt(id[0]) : parseInt(id as string);
-  const project = projects.find(p => p.id === projectId);
+  const project = projects.find(p => p.id === projectId); // Encontramos el proyecto por ID
 
-  const { proyectosDisponibles, proyectosPostulados, postularAProyecto } = useProjectContext();
+  const { proyectosPostulados, postularAProyecto } = useProjectContext();
 
+  // Verifica si ya está postulado
   const yaPostulado = proyectosPostulados.some((p) => p.id === projectId);
-  
+
   const handlePostularme = () => {
     if (!project) return;
-    postularAProyecto(project); // 👈 postula
+
+    if (yaPostulado) {
+      Alert.alert(
+        'Ya estás postulado',
+        'Ya has postulado a este proyecto. Espera una respuesta por parte de la empresa.',
+        [{ text: 'Aceptar' }]
+      );
+      return;
+    }
+
+    postularAProyecto(project);
     Alert.alert(
-      '¡Postulación enviada exitosamente!',
-      'Tu postulación fue enviada a la empresa. Te notificaremos sobre el progreso de tu solicitud en breve. ¡Gracias por tu interés y suerte!',
+      '¡Postulación enviada!',
+      'Tu postulación fue enviada a la empresa. Te notificaremos sobre el resultado.',
       [{ text: 'Aceptar' }]
     );
   };

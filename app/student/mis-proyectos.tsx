@@ -1,31 +1,50 @@
 import React from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 import { useProjectContext } from '@/context/ProjectContext';
-import projects from '../../data/projects'; // Importar proyectos
-
-type Project = typeof projects[0]; // Definir el tipo Project basándonos en la estructura de tu data
+import { useRouter } from 'expo-router';
 
 export default function MisProyectosScreen() {
-  const { proyectosAceptados } = useProjectContext(); // 👈 Cambio aquí
+  const { proyectosAceptados } = useProjectContext();
+  const router = useRouter();
+
+  const pendientes = proyectosAceptados.filter(p => !p.entregado);
+  const entregados = proyectosAceptados.filter(p => p.entregado);
+
+  const renderItem = (item: any) => (
+    <View style={styles.card} key={item.id}>
+      <Text style={styles.title}>{item.title}</Text>
+      <Text style={styles.estado}>
+        Estado de entrega: {item.entregado ? '📤 Entregado' : '🕓 Pendiente de entrega'}
+      </Text>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => router.push(`/student/buscar-id/${item.id}`)}
+      >
+        <Text style={styles.buttonText}>Ver detalles</Text>
+      </TouchableOpacity>
+    </View>
+  );
 
   return (
     <View style={styles.container}>
-      <Text style={styles.sectionTitle}>✅ Mis Proyectos Aceptados</Text>
+      <Text style={styles.sectionTitle}>📝 Mis Proyectos Aceptados</Text>
       <FlatList
-        data={proyectosAceptados}
+        data={pendientes}
         keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <View style={styles.card} key={item.id}>
-            <Text style={styles.title}>{item.title}</Text>
-            <Text style={styles.estado}>
-              Estado: {item.status === 'completado' ? '✅ Aceptado' : '⏳ Pendiente'}
-            </Text>
-            <TouchableOpacity style={styles.button}>
-              <Text style={styles.buttonText}>Ver detalles</Text>
-            </TouchableOpacity>
-          </View>
-        )}
+        renderItem={({ item }) => renderItem(item)}
+        ListEmptyComponent={<Text>No tienes proyectos pendientes.</Text>}
       />
+
+      {entregados.length > 0 && (
+        <>
+          <Text style={styles.sectionTitle}>📤 Mis Proyectos Enviados</Text>
+          <FlatList
+            data={entregados}
+            keyExtractor={(item) => item.id.toString()}
+            renderItem={({ item }) => renderItem(item)}
+          />
+        </>
+      )}
     </View>
   );
 }

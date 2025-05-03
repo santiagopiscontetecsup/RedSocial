@@ -1,10 +1,8 @@
-// ProjectContext.tsx
 import React, { createContext, useContext, useState } from 'react';
 import projectsData from '@/data/projects';
 import { Alert } from 'react-native';
 
-// 👇 Define tipo Project explícito (si no lo has hecho)
-export type Project = typeof projectsData[0];
+export type Project = typeof projectsData[0] & { entregado?: boolean };
 
 interface Notificacion {
   id: number;
@@ -18,6 +16,7 @@ interface ProjectContextType {
   proyectosAceptados: Project[];
   notificaciones: Notificacion[];
   postularAProyecto: (project: Project) => void;
+  entregarProyecto: (projectId: number) => void;
 }
 
 const ProjectContext = createContext<ProjectContextType | undefined>(undefined);
@@ -35,41 +34,51 @@ export const ProjectProvider = ({ children }: { children: React.ReactNode }) => 
   const [proyectosAceptados, setProyectosAceptados] = useState<Project[]>([]);
 
   const postularAProyecto = (project: Project) => {
+    const yaFuePostulado = proyectosPostulados.some((p) => p.id === project.id);
+    const yaFueAceptado = proyectosAceptados.some((p) => p.id === project.id);
+
+    if (yaFuePostulado || yaFueAceptado) return;
+
     setProyectosPostulados((prev) => [...prev, { ...project, status: 'pendiente' }]);
     setProyectosDisponibles((prev) => prev.filter((p) => p.id !== project.id));
-  
+
     setTimeout(() => {
       const aceptado = Math.random() < 0.6;
-  
       if (aceptado) {
-        setProyectosAceptados((prev) => [...prev, { ...project, status: 'completado' }]);
+        setProyectosAceptados((prev) => [...prev, { ...project, status: 'completado', entregado: false }]);
         setNotificaciones((prev) => [
           ...prev,
           { id: Date.now(), mensaje: `Tu postulación a "${project.title}" fue aceptada.`, tipo: 'aceptado' },
         ]);
-        Alert.alert(
-          '🎉 ¡Felicidades!',
-          'La empresa ha aceptado tu postulación. El proyecto se ha añadido a tus proyectos.',
-          [{ text: 'Aceptar' }]
-        );
+        Alert.alert('🎉 ¡Felicidades!', 'La empresa ha aceptado tu postulación.');
       } else {
         setNotificaciones((prev) => [
           ...prev,
           { id: Date.now(), mensaje: `Tu postulación a "${project.title}" fue rechazada.`, tipo: 'rechazado' },
         ]);
-        Alert.alert(
-          '😢 Postulación rechazada',
-          'Lamentablemente, la empresa no ha aceptado tu postulación esta vez.',
-          [{ text: 'Aceptar' }]
-        );
+        Alert.alert('😢 Rechazado', 'La empresa no aceptó tu postulación esta vez.');
       }
-  
+
       setProyectosPostulados((prev) => prev.filter((p) => p.id !== project.id));
     }, 3000);
   };
+
+  const entregarProyecto = (projectId: number) => {
+    setProyectosAceptados((prev) =>
+      prev.map((p) => (p.id === projectId ? { ...p, entregado: true } : p))
+    );
+  };
+
   return (
     <ProjectContext.Provider
-      value={{ proyectosDisponibles, proyectosPostulados, proyectosAceptados, notificaciones, postularAProyecto }}
+      value={{
+        proyectosDisponibles,
+        proyectosPostulados,
+        proyectosAceptados,
+        notificaciones,
+        postularAProyecto,
+        entregarProyecto,
+      }}
     >
       {children}
     </ProjectContext.Provider>

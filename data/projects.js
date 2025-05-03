@@ -6,7 +6,8 @@ const projects = [
     description:
       'Estamos buscando un Desarrollador Backend (Node.js) con experiencia en la creación de APIs escalables y optimizadas. Te unirás a un equipo dinámico que desarrolla soluciones innovadoras para el sector fintech.',
     deadline: '2025-08-20T23:59:59',
-    status: 'pendiente', // se sigue usando como string, no booleano
+    status: 'pendiente', // Aún no ha sido entregado
+    entregado: false,
     numero_participantes: 15,
     id_empresa: 101,
     id_tipo_recompensa: 2,
@@ -31,7 +32,8 @@ const projects = [
     description:
       'Proyecto para desarrollar una plataforma web que gestione los procesos internos de la empresa y mejore la eficiencia operativa.',
     deadline: '2025-08-20T23:59:59',
-    status: 'completado',
+    status: 'completado', // Ya fue entregado
+    entregado: true,
     numero_participantes: 8,
     id_empresa: 102,
     id_tipo_recompensa: 1,
