@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Colors from '@/constants/Colors';
-import { useAuth } from '@/context/AuthContext'; // Importar el contexto de autenticación
+import { useAuth } from '@/context/AuthContext'; 
 import { useRouter } from 'expo-router';
 
 export default function MenuScreen() {
@@ -23,6 +23,10 @@ export default function MenuScreen() {
 
   const handleGoToCertificates = () => {
     router.push('/student/certificates'); // te manda a la pantalla de certificados
+  }
+
+  const handleGoToEvaluations = () => {
+    router.push('/student/evaluaciones'); // te manda a la pantalla de evaluaciones
   }
 
 
@@ -67,9 +71,9 @@ export default function MenuScreen() {
           <Text style={styles.menuText}>Buscar Retos</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.menuItem}>
+        <TouchableOpacity style={styles.menuItem} onPress={handleGoToEvaluations}>
           <Ionicons name="settings-outline" size={20} color={Colors.gray} />
-          <Text style={styles.menuText}>Ajustes</Text>
+          <Text style={styles.menuText}>Mis Evaluaciones</Text>
         </TouchableOpacity>
 
         {/* Logout Button */}

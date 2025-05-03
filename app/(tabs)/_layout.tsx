@@ -16,32 +16,18 @@ export default function TabLayout() {
         },
       }}
     >
+     {/* Pestañas visibles */}
+     <Tabs.Screen name="home" options={{ tabBarIcon: ({ color }) => <Ionicons name="home" size={24} color={color} /> }} />
+      <Tabs.Screen name="profile" options={{ tabBarIcon: ({ color }) => <Ionicons name="person" size={24} color={color} /> }} />
+      <Tabs.Screen name="notifications" options={{ tabBarIcon: ({ color }) => <Ionicons name="notifications" size={24} color={color} /> }} />
+      <Tabs.Screen name="menu" options={{ tabBarIcon: ({ color }) => <Ionicons name="menu" size={24} color={color} /> }} />
+
+      {/* Pestaña oculta para student */}
       <Tabs.Screen
-        name="home"
+        name="student"
         options={{
-          title: 'Inicio',
-          tabBarIcon: ({ color }) => <Ionicons name="home" size={24} color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="profile"
-        options={{
-          title: 'Perfil',
-          tabBarIcon: ({ color }) => <Ionicons name="person" size={24} color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="notifications"
-        options={{
-          title: 'Notificaciones',
-          tabBarIcon: ({ color }) => <Ionicons name="notifications" size={24} color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="menu"
-        options={{
-          title: 'Menú',
-          tabBarIcon: ({ color }) => <Ionicons name="menu" size={24} color={color} />,
+          href: null, // Oculta completamente la pestaña
+          headerShown: false
         }}
       />
     </Tabs>

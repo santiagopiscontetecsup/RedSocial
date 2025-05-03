@@ -40,11 +40,12 @@ function AuthGate() {
 
   useEffect(() => {
     const inAuthGroup = segments[0] === 'auth';
+    // const inStudentGroup = segments[0] === '(tabs)/student';
   
     if (!isAuthenticated && !inAuthGroup) {
       router.replace('/auth/login');
     } else if (isAuthenticated && inAuthGroup) {
-      router.replace('/home'); // Cambia a la ruta inicial de las pestañas
+      router.replace('/(tabs)/home'); // Cambia a la ruta inicial de las pestañas
     }
   }, [isAuthenticated]);
 

@@ -6,37 +6,47 @@ import CustomButton from '@/components/ui/CustomButton';
 import Colors from '@/constants/Colors';
 import { useLocalSearchParams } from 'expo-router';
 import { registerUser } from '@/services/register/registerService';
-import { universidades, carreras } from '@/data/registo';
+import { universidades, carreras, idiomas, nivelIdioma } from '@/data/registo';
 
 export default function RegisterStep3Screen() {
   const [githubLink, setGithubLink] = useState('');
-  const [isStudent, setIsStudent] = useState(true);
   const [selectedUniversity, setSelectedUniversity] = useState('');
   const [selectedCareer, setSelectedCareer] = useState('');
-  const [language, setLanguage] = useState('');
-  const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
-  const [otherLanguage, setOtherLanguage] = useState('');
-
-  const [showOtherLanguageInput, setShowOtherLanguageInput] = useState(false);
-  const animationHeight = useSharedValue(0);
+  const [selectedLanguages, setSelectedLanguages] = useState<
+    { idIdioma: number; nivel: string }[]
+  >([]);
+  const [selectedLanguage, setSelectedLanguage] = useState<number | null>(null);
+  const [selectedLevel, setSelectedLevel] = useState<string | null>(null);
 
   const { fullName, email, phone, password } = useLocalSearchParams();
 
-  const toggleLanguage = (lang: string) => {
+  const handleAddLanguage = () => {
+    if (selectedLanguage && selectedLevel) {
+      const newLanguage = {
+        idIdioma: selectedLanguage,
+        nivel: selectedLevel,
+      };
+
+      // Evitar duplicados
+      if (
+        !selectedLanguages.some(
+          (lang) => lang.idIdioma === newLanguage.idIdioma
+        )
+      ) {
+        setSelectedLanguages((prev) => [...prev, newLanguage]);
+      }
+
+      // Reiniciar selección
+      setSelectedLanguage(null);
+      setSelectedLevel(null);
+    }
+  };
+
+  const handleRemoveLanguage = (idIdioma: number) => {
     setSelectedLanguages((prev) =>
-      prev.includes(lang) ? prev.filter((l) => l !== lang) : [...prev, lang]
+      prev.filter((lang) => lang.idIdioma !== idIdioma)
     );
   };
-
-  const handleToggleOtherLanguageInput = () => {
-    setShowOtherLanguageInput(!showOtherLanguageInput);
-    animationHeight.value = showOtherLanguageInput ? withTiming(0) : withTiming(60);
-  };
-
-  const animatedStyle = useAnimatedStyle(() => ({
-    height: animationHeight.value,
-    opacity: animationHeight.value > 0 ? 1 : 0,
-  }));
 
   const handleFinalize = async () => {
     const [firstName, lastName] = (fullName as string).split(' ', 2);
@@ -54,15 +64,19 @@ export default function RegisterStep3Screen() {
     };
 
     console.log('Enviando datos al backend:', data);
+    console.log('Cuerpo enviado al backend:', JSON.stringify(data, null, 2));
 
-    try {
-      const response = await registerUser(data);
-      console.log('Usuario registrado con éxito:', response);
-      alert('Registro exitoso');
-    } catch (error: any) {
-      console.error('Error al registrar el usuario:', error.message);
-      alert(error.message || 'Error al registrar el usuario');
-    }
+    // descomentar para hacer puebras con el backend
+    // try {
+    //   const response = await registerUser(data);
+    //   console.log('Usuario registrado con éxito:', response);
+    //   alert('Registro exitoso');
+    //   // nos manda a la vista del login
+    //   router.replace('/auth/login');
+    // } catch (error: any) {
+    //   console.error('Error al registrar el usuario:', error.message);
+    //   alert(error.message || 'Error al registrar el usuario');
+    // }
   };
 
   return (
@@ -90,14 +104,16 @@ export default function RegisterStep3Screen() {
               key={uni.id}
               style={[
                 styles.optionButton,
-                selectedUniversity === uni.id.toString() && styles.optionButtonSelected,
+                selectedUniversity === uni.id.toString() &&
+                  styles.optionButtonSelected,
               ]}
               onPress={() => setSelectedUniversity(uni.id.toString())}
             >
               <Text
                 style={[
                   styles.optionText,
-                  selectedUniversity === uni.id.toString() && styles.optionTextSelected,
+                  selectedUniversity === uni.id.toString() &&
+                    styles.optionTextSelected,
                 ]}
               >
                 {uni.nombre}
@@ -116,14 +132,16 @@ export default function RegisterStep3Screen() {
               key={carrera.id}
               style={[
                 styles.optionButton,
-                selectedCareer === carrera.id.toString() && styles.optionButtonSelected,
+                selectedCareer === carrera.id.toString() &&
+                  styles.optionButtonSelected,
               ]}
               onPress={() => setSelectedCareer(carrera.id.toString())}
             >
               <Text
                 style={[
                   styles.optionText,
-                  selectedCareer === carrera.id.toString() && styles.optionTextSelected,
+                  selectedCareer === carrera.id.toString() &&
+                    styles.optionTextSelected,
                 ]}
               >
                 {carrera.nombre}
@@ -135,37 +153,78 @@ export default function RegisterStep3Screen() {
 
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Idiomas</Text>
-        <Text style={styles.sectionSubtitle}>Selecciona uno o más idiomas</Text>
+        <Text style={styles.sectionSubtitle}>
+          Selecciona un idioma y su nivel
+        </Text>
         <View style={styles.optionsContainer}>
-          {['Español', 'Inglés', 'Francés', 'Alemán', 'Otro'].map((lang) => (
+          {idiomas.map((idioma) => (
             <TouchableOpacity
-              key={lang}
+              key={idioma.id}
               style={[
                 styles.optionButton,
-                selectedLanguages.includes(lang) && styles.optionButtonSelected,
+                selectedLanguage === idioma.id && styles.optionButtonSelected,
               ]}
-              onPress={() => toggleLanguage(lang)}
+              onPress={() => setSelectedLanguage(idioma.id)}
             >
               <Text
                 style={[
                   styles.optionText,
-                  selectedLanguages.includes(lang) && styles.optionTextSelected,
+                  selectedLanguage === idioma.id && styles.optionTextSelected,
                 ]}
               >
-                {lang}
+                {idioma.nombre}
               </Text>
             </TouchableOpacity>
           ))}
         </View>
-        {selectedLanguages.includes('Otro') && (
-          <Animated.View style={[styles.animatedContainer, animatedStyle]}>
-            <InputField
-              placeholder="Especifica otro idioma"
-              value={otherLanguage}
-              onChangeText={setOtherLanguage}
-            />
-          </Animated.View>
+        
+
+        {selectedLanguage && (
+          
+          <View style={styles.optionsContainer}>
+            {nivelIdioma.map((nivel) => (
+              <TouchableOpacity
+                key={nivel.id}
+                style={[
+                  styles.optionButton,
+                  selectedLevel === nivel.nombre &&
+                    styles.optionButtonSelected,
+                ]}
+                onPress={() => setSelectedLevel(nivel.nombre)}
+              >
+                <Text
+                  style={[
+                    styles.optionText,
+                    selectedLevel === nivel.nombre &&
+                      styles.optionTextSelected,
+                  ]}
+                >
+                  {nivel.nombre}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
         )}
+
+        {selectedLanguage && selectedLevel && (
+          <CustomButton title="Agregar Idioma" onPress={handleAddLanguage} />
+        )}
+
+        <View style={styles.selectedLanguagesContainer}>
+          {selectedLanguages.map((lang) => (
+            <View key={lang.idIdioma} style={styles.selectedLanguage}>
+              <Text style={styles.selectedLanguageText}>
+                {idiomas.find((idioma) => idioma.id === lang.idIdioma)?.nombre}{' '}
+                - {lang.nivel}
+              </Text>
+              <TouchableOpacity
+                onPress={() => handleRemoveLanguage(lang.idIdioma)}
+              >
+                <Text style={styles.removeLanguage}>Eliminar</Text>
+              </TouchableOpacity>
+            </View>
+          ))}
+        </View>
       </View>
 
       <CustomButton title="Finalizar" onPress={handleFinalize} />
@@ -221,8 +280,24 @@ const styles = StyleSheet.create({
   optionTextSelected: {
     color: '#fff',
   },
-  animatedContainer: {
-    overflow: 'hidden',
-    marginTop: 10,
+  selectedLanguagesContainer: {
+    marginTop: 16,
+  },
+  selectedLanguage: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: Colors.lightGray,
+    padding: 10,
+    borderRadius: 10,
+    marginBottom: 8,
+  },
+  selectedLanguageText: {
+    fontSize: 14,
+    color: Colors.primary,
+  },
+  removeLanguage: {
+    fontSize: 12,
+    color: Colors.error,
   },
 });

@@ -112,13 +112,13 @@ export default function LoginScreen() {
         </Text>
       </Text>
 
-      <View style={styles.roleButtons}>
+      {/* <View style={styles.roleButtons}>
         <CustomButton
           title="Estudiante"
           onPress={() => router.push('/auth/register/student/register')} // Redirige a la pantalla de registro
           small
         />
-      </View>
+      </View> */}
     </ScrollView>
   );
 }
