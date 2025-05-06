@@ -1,22 +1,31 @@
 import React from 'react';
 import { View, Text, StyleSheet, FlatList, Image } from 'react-native';
+import { useProjectContext } from '@/context/ProjectContext';
 import Colors from '@/constants/Colors';
-import notifications from '@/data/notificaciones';
 import AnimatedSearchBar from '@/components/ui/AnimatedSearchBar';
 
 export default function NotificationsScreen() {
-  const renderNotification = ({ item }: { item: typeof notifications[0] }) => (
-    <View style={styles.notificationCard}>
+  const { notificaciones } = useProjectContext();
+
+  const renderNotification = ({ item }: { item: typeof notificaciones[0] }) => (
+    <View
+      style={[
+        styles.notificationCard,
+        item.tipo === 'aceptado' ? styles.cardAceptado : styles.cardRechazado,
+      ]}
+    >
       <Image source={{ uri: item.avatar }} style={styles.avatar} />
       <View style={styles.notificationContent}>
         <Text style={styles.name}>{item.name}</Text>
-        <Text style={styles.message}>{item.message}</Text>
+        <Text style={styles.message}>{item.mensaje}</Text>
       </View>
       <View style={styles.notificationMeta}>
         <Text style={styles.time}>{item.time}</Text>
-        <View style={styles.badge}>
-          <Text style={styles.badgeText}>1</Text>
-        </View>
+        {!item.leido && (
+          <View style={styles.badge}>
+            <Text style={styles.badgeText}>1</Text>
+          </View>
+        )}
       </View>
     </View>
   );
@@ -26,24 +35,25 @@ export default function NotificationsScreen() {
       {/* Header */}
       <View style={styles.header}>
         <Image
-          source={{ uri: 'https://via.placeholder.com/100x40' }} // Replace with your logo URL
+          source={{ uri: 'https://via.placeholder.com/100x40' }}
           style={styles.logo}
         />
       </View>
 
-      {/* Title */}
-      <Text style={styles.title}>Notificaciones</Text>
+      <Text style={styles.title}>🔔 Notificaciones</Text>
 
-      {/* Search Bar */}
       <AnimatedSearchBar placeholder="Buscar notificaciones" />
 
-      {/* Notifications List */}
-      <FlatList
-        data={notifications}
-        renderItem={renderNotification}
-        keyExtractor={(item) => item.id.toString()}
-        contentContainerStyle={styles.list}
-      />
+      {notificaciones.length === 0 ? (
+        <Text style={styles.empty}>No tienes notificaciones aún</Text>
+      ) : (
+        <FlatList
+          data={notificaciones}
+          renderItem={renderNotification}
+          keyExtractor={(item) => item.id.toString()}
+          contentContainerStyle={styles.list}
+        />
+      )}
     </View>
   );
 }
@@ -65,7 +75,7 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
   title: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 16,
   },
@@ -75,10 +85,15 @@ const styles = StyleSheet.create({
   notificationCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#f9f9f9',
     borderRadius: 10,
     padding: 12,
     marginBottom: 8,
+  },
+  cardAceptado: {
+    backgroundColor: '#d1e7dd',
+  },
+  cardRechazado: {
+    backgroundColor: '#f8d7da',
   },
   avatar: {
     width: 50,
@@ -116,5 +131,11 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 10,
     fontWeight: 'bold',
+  },
+  empty: {
+    fontSize: 16,
+    color: '#888',
+    textAlign: 'center',
+    marginTop: 40,
   },
 });

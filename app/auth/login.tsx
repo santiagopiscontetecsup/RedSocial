@@ -25,35 +25,35 @@ export default function LoginScreen() {
   const [isLoading, setIsLoading] = useState(false);
 
   // descomentar para pobrar en local
-  const handleLogin = async () => {
-    setIsLoading(true);
-    try {
-      await login(email, password); // Llama a la función `login` del contexto
-      router.push('/home'); // Redirige al usuario a la pantalla principal
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-  // descomentar para verificar el enddpoint de login
   // const handleLogin = async () => {
   //   setIsLoading(true);
   //   try {
-  //     const data = { email, password };
-  //     const response = await loginUser(data); // Llama a la función para iniciar sesión
-  //     console.log('Inicio de sesión exitoso:', response);
-  
-  //     // Aquí puedes guardar el token o manejar la respuesta del backend
-  //     alert('Inicio de sesión exitoso');
-  //     router.push('/home'); // Redirige al usuario a la pantalla principal
-  //   } catch (error: any) {
-  //     console.error('Error al iniciar sesión:', error.message);
-  //     alert(error.message || 'Error al iniciar sesión');
+  //     await login(email, password); // Llama a la función `login` del contexto
+  //     router.replace('/(tabs)/home'); // Redirige al usuario a la pantalla principal
+  //   } catch (error) {
+  //     console.error(error);
   //   } finally {
   //     setIsLoading(false);
   //   }
   // };
+  // descomentar para verificar el enddpoint de login
+  const handleLogin = async () => {
+    setIsLoading(true);
+    try {
+      const data = { email, password };
+      const response = await loginUser(data); // Llama a la función para iniciar sesión
+      console.log('Inicio de sesión exitoso:', response);
+  
+      // Aquí puedes guardar el token o manejar la respuesta del backend
+      alert('Inicio de sesión exitoso');
+      router.push('/home'); // Redirige al usuario a la pantalla principal
+    } catch (error: any) {
+      console.error('Error al iniciar sesión:', error.message);
+      alert(error.message || 'Error al iniciar sesión');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>

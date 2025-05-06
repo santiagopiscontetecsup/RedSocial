@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import Colors from '@/constants/Colors';
 
 const Card = ({
@@ -7,23 +7,27 @@ const Card = ({
   title,
   description,
   deadline,
+  onPress,
 }: {
   image: string;
   title: string;
   description: string;
   deadline: string;
+  onPress?: () => void;
 }) => {
   return (
-    <View style={styles.card}>
-      <Image source={{ uri: image }} style={styles.image} />
-      <View style={styles.content}>
-        <View style={styles.header}>
-          <Text style={styles.title}>{title}</Text>
-          <Text style={styles.deadline}>Fecha limite {deadline}</Text>
+    <TouchableOpacity onPress={onPress}>
+      <View style={styles.card}>
+        <Image source={{ uri: image }} style={styles.image} />
+        <View style={styles.content}>
+          <View style={styles.header}>
+            <Text style={styles.title}>{title}</Text>
+            <Text style={styles.deadline}>Fecha límite {deadline}</Text>
+          </View>
+          <Text style={styles.description}>{description}</Text>
         </View>
-        <Text style={styles.description}>{description}</Text>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 

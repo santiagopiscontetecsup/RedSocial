@@ -4,7 +4,7 @@ import Animated, { useSharedValue, useAnimatedStyle, withTiming } from 'react-na
 import InputField from '@/components/ui/InputField';
 import CustomButton from '@/components/ui/CustomButton';
 import Colors from '@/constants/Colors';
-import { useLocalSearchParams } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { registerUser } from '@/services/register/registerService';
 import { universidades, carreras, idiomas, nivelIdioma } from '@/data/registo';
 
@@ -67,16 +67,16 @@ export default function RegisterStep3Screen() {
     console.log('Cuerpo enviado al backend:', JSON.stringify(data, null, 2));
 
     // descomentar para hacer puebras con el backend
-    // try {
-    //   const response = await registerUser(data);
-    //   console.log('Usuario registrado con éxito:', response);
-    //   alert('Registro exitoso');
-    //   // nos manda a la vista del login
-    //   router.replace('/auth/login');
-    // } catch (error: any) {
-    //   console.error('Error al registrar el usuario:', error.message);
-    //   alert(error.message || 'Error al registrar el usuario');
-    // }
+    try {
+      const response = await registerUser(data);
+      console.log('Usuario registrado con éxito:', response);
+      alert('Registro exitoso');
+      // nos manda a la vista del login
+      router.replace('/auth/login');
+    } catch (error: any) {
+      console.error('Error al registrar el usuario:', error.message);
+      alert(error.message || 'Error al registrar el usuario');
+    }
   };
 
   return (

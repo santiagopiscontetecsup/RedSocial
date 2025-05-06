@@ -1,7 +1,15 @@
 import axios from 'axios';
 
 // esta es la url que hace conexiona la api
-const API_BASE_URL = process.env.API_BASE_URL;
+import Constants from 'expo-constants';
+
+const API_BASE_URL = Constants.expoConfig?.extra?.API_BASE_URL;
+
+if (!API_BASE_URL) {
+  console.error('Error: API_BASE_URL no está configurada en el archivo .env');
+}
+
+console.log('API Base URL:', API_BASE_URL);
 
 // configuracion de axios para la api
 const api = axios.create({
@@ -9,6 +17,19 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+  timeout: 10000, // Timeout de 10 segundos
 });
+
+// Interceptor para manejar errores de red
+api.interceptors.response.use(
+  response => response,
+  error => {
+    if (!error.response) {
+      console.error('Error de red:', error.message);
+      error.message = 'Error de conexión con el servidor. Por favor, verifica tu conexión a internet.';
+    }
+    return Promise.reject(error);
+  }
+);
 
 export default api;

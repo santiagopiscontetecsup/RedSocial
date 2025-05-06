@@ -3,8 +3,10 @@ import { View, Text, StyleSheet, FlatList } from 'react-native';
 import ProfileHeader from '@/components/ui/ProfileHeader';
 import Certificado from '@/components/ui/Certificado';
 import certificates from '@/data/certificados';
+import { router } from 'expo-router';
 
 export default function CertificatesScreen() {
+  
   const renderCertificate = ({ item }: { item: typeof certificates[0] }) => (
     <Certificado
       title={item.title}

@@ -1,27 +1,14 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import AnimatedSearchBar from '@/components/ui/AnimatedSearchBar';
+import { useNavigation } from '@react-navigation/native';
+import SearchBar from '@/components/ui/SearchBar';
 import Card from '@/components/ui/Card';
-
+import { router } from 'expo-router';
+import projects from '../../data/projects';
 export default function HomeScreen() {
-  const projects = [
-    {
-      id: 1,
-      image: 'https://via.placeholder.com/150',
-      title: 'Web Scraping',
-      description:
-        'Buscamos un especialista en web scraping para extraer datos de sitios web. El candidato ideal debe tener experiencia en Python y herramientas como Beautiful Soup o Scrapy.',
-      deadline: '20/08',
-    },
-    {
-      id: 2,
-      image: 'https://via.placeholder.com/150',
-      title: 'Web Application',
-      description:
-        'Estamos buscando desarrollar una aplicación web que mejore nuestra eficiencia operativa y la experiencia del cliente.',
-      deadline: '20/08',
-    },
-  ];
+  const navigation = useNavigation();
+
 
   return (
     <View style={styles.container}>
@@ -35,6 +22,18 @@ export default function HomeScreen() {
             title={project.title}
             description={project.description}
             deadline={project.deadline}
+            onPress={() => 
+              router.push({
+                pathname: '/student/DetalleReto',
+                params: {
+                  id: project.id,
+                  title: project.title,
+                  description: project.description,
+                  deadline: project.deadline,
+                },
+                
+              })
+            }
           />
         ))}
       </ScrollView>
