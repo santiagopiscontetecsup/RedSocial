@@ -7,13 +7,16 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
+  Alert,
 } from 'react-native';
 import { useRouter } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAuth } from '@/context/AuthContext';
 import CustomButton from '@/components/ui/CustomButton';
 import InputField from '@/components/ui/InputField';
 import Colors from '@/constants/Colors';
 import { loginUser } from '@/services/login/loginService';
+import { getStudentIdFromToken } from '@/services/login/tokenService';
 
 
 export default function LoginScreen() {
@@ -37,30 +40,35 @@ export default function LoginScreen() {
   //   }
   // };
   // descomentar para verificar el enddpoint de login
+
   const handleLogin = async () => {
-    setIsLoading(true);
     try {
       const data = { email, password };
-      const response = await loginUser(data); // Llama a la función para iniciar sesión
+      const response = await loginUser(data); // Llama al servicio de login
       console.log('Inicio de sesión exitoso:', response);
   
-      // Aquí puedes guardar el token o manejar la respuesta del backend
-      alert('Inicio de sesión exitoso');
-      router.push('/home'); // Redirige al usuario a la pantalla principal
-    } catch (error: any) {
-      console.error('Error al iniciar sesión:', error.message);
-      alert(error.message || 'Error al iniciar sesión');
-    } finally {
-      setIsLoading(false);
+      // Obtén el ID del estudiante a partir del token
+      const studentId = getStudentIdFromToken(response.token);
+      console.log('ID del estudiante logueado:', studentId);
+  
+      // Guarda el token y el ID del estudiante en el contexto o AsyncStorage
+      await AsyncStorage.setItem('token', response.token);
+      await AsyncStorage.setItem('studentId', studentId || '');
+  
+      // Redirige al usuario a la pantalla principal
+      router.replace('/(tabs)/home');
+    } catch (error) {
+      console.error('Error al iniciar sesión:', error);
+      Alert.alert('Error', 'No se pudo iniciar sesión. Intenta nuevamente.');
     }
   };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Login</Text>
+      <Text style={styles.title}>Inicio de Sesion</Text>
 
       <Image
-        source={require('@/assets/images/react-logo.png')}
+        source={require('@/assets/images/logo.png')}
         style={styles.image}
         resizeMode="contain"
       />
