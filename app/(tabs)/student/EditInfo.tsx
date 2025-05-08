@@ -77,19 +77,19 @@ export default function EditInfoScreen() {
           placeholder="Nombre Completo"
           value={name}
           onChangeText={setName}
-          style={styles.input}
+          // style={styles.input}
         />
         <InputField
           placeholder="Email"
           value={email}
           onChangeText={setEmail}
-          style={styles.input}
+          // style={styles.input}
         />
         <InputField
           placeholder="Teléfono"
           value={phone}
           onChangeText={setPhone}
-          style={styles.input}
+          // style={styles.input}
         />
 
         {/* Universidad */}
@@ -113,7 +113,7 @@ export default function EditInfoScreen() {
           }))}
           selectedValue={selectedCareer}
           onValueChange={setSelectedCareer}
-          style={styles.input}
+          // style={styles.input}
         />
 
         {/* Save Button */}

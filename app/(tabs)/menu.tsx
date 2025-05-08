@@ -2,31 +2,37 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Colors from '@/constants/Colors';
-import { useAuth } from '@/context/AuthContext'; 
 import { useRouter } from 'expo-router';
+import { useAuth } from '@/context/AuthContext'; // Importar el contexto de autenticación
+
 
 export default function MenuScreen() {
   const { logout } = useAuth(); // Obtener la función de logout del contexto
   const router = useRouter(); // Importar el enrutador de Expo Router
 
   const handleLogout = async () => {
-    await logout(); // Llamar a la función de logout
+    await logout();
+    router.replace('/auth/login'); // Redirección a login después de cerrar sesión
   };
-
+  
   const handleGoToProfile = () =>{
-    router.push('/profile'); // te manda a la pantalla de perfil
+    router.push('/(tabs)/profile'); // Mantener consistencia en la navegación de pestañas
   }
 
   const handleGoToNotifications = () => {
-    router.push('/notifications'); // te manda a la pantalla de notificaciones
+    router.push('/(tabs)/notifications'); // Mantener consistencia en la navegación de pestañas
   }
 
   const handleGoToCertificates = () => {
-    router.push('/student/certificates'); // te manda a la pantalla de certificados
+    router.push('/student/certificates'); // Simplificar la ruta para mejor gestión del historial
   }
 
   const handleGoToEvaluations = () => {
-    router.push('/student/evaluaciones'); // te manda a la pantalla de evaluaciones
+    router.push('/student/evaluaciones'); // Simplificar la ruta para mejor gestión del historial
+  }
+
+  const handleGoToProjects = () => {
+    router.push('/student/mis-proyectos'); // Simplificar la ruta para mejor gestión del historial
   }
 
 
@@ -56,7 +62,7 @@ export default function MenuScreen() {
           <Text style={styles.badge}>24</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.menuItem}>
+        <TouchableOpacity style={styles.menuItem} onPress={handleGoToProjects}>
           <Ionicons name="folder-outline" size={20} color={Colors.gray} />
           <Text style={styles.menuText}>Mis Proyectos</Text>
         </TouchableOpacity>
