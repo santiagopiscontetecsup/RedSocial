@@ -159,7 +159,7 @@ import {
 import { useLocalSearchParams } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { postularProyecto } from '@/services/proyectos/postulacionService';
-import { getStudentIdFromToken } from '@/services/login/tokenService'; // Importa la función para obtener el ID del estudiante
+import { getStudentIdFromToken } from '@/services/login/tokenService';
 import { MaterialIcons, FontAwesome, Entypo } from '@expo/vector-icons';
 
 const DetalleReto = () => {
@@ -168,15 +168,23 @@ const DetalleReto = () => {
 
   const [modalVisible, setModalVisible] = useState(false);
   const [resumenHabilidades, setResumenHabilidades] = useState('');
-  const [idEstudiante, setIdEstudiante] = useState<string | null>(null); // Estado para almacenar el ID del estudiante
+  const [idEstudiante, setIdEstudiante] = useState<string | null>(null);
+  const [yaPostulado, setYaPostulado] = useState(false); // Estado para verificar si ya está postulado
 
   useEffect(() => {
     const fetchStudentId = async () => {
       try {
-        const token = await AsyncStorage.getItem('token'); // Obtén el token del almacenamiento
+        const token = await AsyncStorage.getItem('token');
         if (token) {
-          const studentId = getStudentIdFromToken(token); // Decodifica el token para obtener el ID del estudiante
+          const studentId = getStudentIdFromToken(token);
           setIdEstudiante(studentId);
+
+          // Verifica si el estudiante ya está postulado al proyecto
+          const postulantes = project.postulantes || []; // Asegúrate de que `postulantes` sea parte del objeto `project`
+          const yaPostulado = postulantes.some(
+            (postulante: any) => postulante.idEstudiante === studentId
+          );
+          setYaPostulado(yaPostulado);
         }
       } catch (error) {
         console.error('Error al obtener el ID del estudiante:', error);
@@ -184,7 +192,7 @@ const DetalleReto = () => {
     };
 
     fetchStudentId();
-  }, []);
+  }, [project]);
 
   const handlePostularme = async () => {
     if (!resumenHabilidades || resumenHabilidades.trim().length < 10) {
@@ -199,7 +207,7 @@ const DetalleReto = () => {
 
     try {
       const body = {
-        idEstudiante: parseInt(idEstudiante), // Usa el ID del estudiante obtenido automáticamente
+        idEstudiante: parseInt(idEstudiante),
         idProyecto: project.id,
         resumenHabilidades: resumenHabilidades.trim(),
       };
@@ -208,9 +216,20 @@ const DetalleReto = () => {
       Alert.alert('Éxito', 'Postulación enviada correctamente.');
       setModalVisible(false);
       setResumenHabilidades('');
-    } catch (err) {
+      setYaPostulado(true); // Actualiza el estado a "postulado"
+    } catch (err: any) {
       console.error('Error al postularse:', err);
-      Alert.alert('Error', 'Error al enviar la postulación');
+
+      // Verifica si el error es porque ya está postulado
+      if (err.response?.data?.mensaje === 'Ya te has postulado a este proyecto.') {
+        Alert.alert(
+          'Ya estás postulado',
+          'Ya has postulado a este proyecto. Espera una respuesta por parte de la empresa.'
+        );
+        setYaPostulado(true); // Actualiza el estado a "postulado"
+      } else {
+        Alert.alert('Error', 'No se pudo enviar la postulación. Intenta nuevamente.');
+      }
     }
   };
 
@@ -243,24 +262,6 @@ const DetalleReto = () => {
             <Text style={styles.detailValue}>{project.tipoRecompensa}</Text>
           </View>
         </View>
-
-        <View style={styles.detailItem}>
-          <MaterialIcons name="code" size={20} color="#6c63ff" />
-          <View style={styles.detailTextContainer}>
-            <Text style={styles.detailLabel}>Habilidades requeridas</Text>
-            <View style={styles.skillsContainer}>
-              {project.habilidades?.length > 0 ? (
-                project.habilidades.map((hab: any) => (
-                  <View key={hab.id} style={styles.skillTag}>
-                    <Text style={styles.skillText}>{hab.nombre}</Text>
-                  </View>
-                ))
-              ) : (
-                <Text style={styles.noSkills}>No se especificaron habilidades</Text>
-              )}
-            </View>
-          </View>
-        </View>
       </View>
 
       <View style={styles.descriptionCard}>
@@ -268,24 +269,23 @@ const DetalleReto = () => {
         <Text style={styles.paragraph}>{project.descripcion}</Text>
       </View>
 
-      <TouchableOpacity 
-        style={styles.button} 
-        onPress={() => setModalVisible(true)}
-        activeOpacity={0.9}
+      <TouchableOpacity
+        style={[styles.button, yaPostulado && styles.buttonDisabled]}
+        onPress={() => !yaPostulado && setModalVisible(true)}
+        disabled={yaPostulado}
       >
-        <Text style={styles.buttonText}>Postularme ahora</Text>
-        <MaterialIcons name="arrow-forward" size={20} color="white" />
+        <Text style={styles.buttonText}>
+          {yaPostulado ? '✅ Ya te postulaste' : 'Postularme ahora'}
+        </Text>
       </TouchableOpacity>
 
       <Modal visible={modalVisible} animationType="fade" transparent>
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>📝 Postulación</Text>
-            
             <Text style={styles.modalSubtitle}>
               Describe cómo tus habilidades coinciden con este proyecto:
             </Text>
-            
             <TextInput
               style={styles.input}
               placeholder="Ej: Tengo experiencia desarrollando aplicaciones móviles con React Native y manejo de APIs..."
@@ -296,17 +296,15 @@ const DetalleReto = () => {
               numberOfLines={5}
               textAlignVertical="top"
             />
-
             <View style={styles.buttonGroup}>
-              <TouchableOpacity 
-                style={[styles.modalButton, styles.cancelButton]} 
+              <TouchableOpacity
+                style={[styles.modalButton, styles.cancelButton]}
                 onPress={() => setModalVisible(false)}
               >
                 <Text style={styles.cancelButtonText}>Cancelar</Text>
               </TouchableOpacity>
-              
-              <TouchableOpacity 
-                style={[styles.modalButton, styles.submitButton]} 
+              <TouchableOpacity
+                style={[styles.modalButton, styles.submitButton]}
                 onPress={handlePostularme}
               >
                 <Text style={styles.submitButtonText}>Enviar postulación</Text>
@@ -319,7 +317,6 @@ const DetalleReto = () => {
     </ScrollView>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
@@ -414,6 +411,9 @@ const styles = StyleSheet.create({
     color: '#555',
     lineHeight: 24,
   },
+  buttonDisabled: {
+    backgroundColor: '#6c757d',
+  },
   button: {
     backgroundColor: '#6c63ff',
     padding: 18,
@@ -504,3 +504,7 @@ const styles = StyleSheet.create({
 });
 
 export default DetalleReto;
+
+
+
+
