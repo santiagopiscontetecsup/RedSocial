@@ -33,16 +33,6 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="menu"
-        options={{ tabBarIcon: ({ color }) => <Ionicons name="menu" size={24} color={color} /> }}
-        listeners={{
-          focus: (e) => {
-            setActiveTab('menu');
-          }
-        }}
-      />
-
-      <Tabs.Screen
         name="profile"
         options={{
           tabBarIcon: ({ color }) => <Ionicons name="person" size={24} color={color} />,
@@ -69,6 +59,15 @@ export default function TabLayout() {
         options={{
           href: null,
           headerShown: false,
+        }}
+      />
+      <Tabs.Screen
+        name="menu"
+        options={{ tabBarIcon: ({ color }) => <Ionicons name="menu" size={24} color={color} /> }}
+        listeners={{
+          focus: (e) => {
+            setActiveTab('menu');
+          }
         }}
       />
     </Tabs>

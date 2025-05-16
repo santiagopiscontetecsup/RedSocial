@@ -11,9 +11,10 @@ export default function MenuScreen() {
   const router = useRouter(); // Importar el enrutador de Expo Router
 
   const handleLogout = async () => {
-    await logout(); // Llamar a la función de logout
+    await logout();
+    router.replace('/auth/login'); // Redirección a login después de cerrar sesión
   };
-
+  
   const handleGoToProfile = () =>{
     router.push('/(tabs)/profile'); // Mantener consistencia en la navegación de pestañas
   }

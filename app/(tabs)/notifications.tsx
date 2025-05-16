@@ -42,7 +42,9 @@ export default function NotificationsScreen() {
 
       <Text style={styles.title}>🔔 Notificaciones</Text>
 
-      <AnimatedSearchBar placeholder="Buscar notificaciones" />
+      <AnimatedSearchBar placeholder="Buscar notificaciones" value={''} onChangeText={function (text: string): void {
+        throw new Error('Function not implemented.');
+      } } />
 
       {notificaciones.length === 0 ? (
         <Text style={styles.empty}>No tienes notificaciones aún</Text>

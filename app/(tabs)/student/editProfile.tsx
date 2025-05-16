@@ -43,7 +43,7 @@ export default function EditProfileScreen() {
         isEditable={true}
         onEditProfile={handleEditProfileImage}
         onViewCertificates={() => Alert.alert('Certificados', 'Redirigiendo a certificados...')}
-        onEditInfo={() => router.push('/student/EditInfo')} // Navegar a EditInfo
+        onEditInfo={() => router.push('/(tabs)/student/EditInfo')} // Navegar a EditInfo
       />
 
       <ProfileDetails
