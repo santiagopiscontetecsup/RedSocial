@@ -3,7 +3,7 @@ import 'dotenv/config'; // 👈 IMPORTANTE para cargar las variables del archivo
 export default {
   expo: {
     name: 'Full Chamba',
-    slug: 'Full Chamba',
+    slug: 'RedSocial',
     version: '1.0.0',
     orientation: 'portrait',
     icon: './assets/images/icon.png',
@@ -19,7 +19,7 @@ export default {
       supportsTablet: true
     },
     android: {
-      package: 'com.fullChamba.redsocial',
+      package: 'com.fullchamba.redsocial',
       versionCode: 1,
       adaptiveIcon: {
         foregroundImage: './assets/images/adaptive-icon.png', // Usa la imagen cuadrada
