@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, Alert, TouchableOpacity, Text } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { MainStackParamList } from '@/navigation/types'; // Asegúrate de importar bien esto
+
 import ProfileHeader from '@/components/ui/ProfileHeader';
 import ProfileDetails from '@/components/ui/ProfileDetails';
 import Colors from '@/constants/Colors';
-import { useRouter } from 'expo-router';
 
 export default function EditProfileScreen() {
-  const router = useRouter();
+  const navigation = useNavigation<NativeStackNavigationProp<MainStackParamList>>();
 
   const [avatar, setAvatar] = useState(
     'https://www1.tecsup.edu.pe/sites/default/files/branches/image_mini/lima_0.png'
@@ -42,8 +45,8 @@ export default function EditProfileScreen() {
         certificatesCount="3"
         isEditable={true}
         onEditProfile={handleEditProfileImage}
-        onViewCertificates={() => Alert.alert('Certificados', 'Redirigiendo a certificados...')}
-        onEditInfo={() => router.push('/(tabs)/student/EditInfo')} // Navegar a EditInfo
+        onViewCertificates={() => navigation.navigate('Certificates')}
+        onEditInfo={() => navigation.navigate('EditInfo')}
       />
 
       <ProfileDetails

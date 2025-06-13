@@ -1,12 +1,12 @@
 import React from 'react';
 import { StyleSheet, ScrollView, View } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import ProfileHeader from '@/components/ui/ProfileHeader';
 import ButtonStyle2 from '@/components/ui/ButtonStyle2';
 import ProfileDetails from '@/components/ui/ProfileDetails';
-import { useRouter } from 'expo-router';
 
 export default function ProfileScreen() {
-  const router = useRouter();
+  const navigation = useNavigation();
 
   const aboutMe =
     'Soy Diseñador UX/UI con experiencia en la creación de interfaces intuitivas y soluciones innovadoras. Me apasiona desarrollar productos digitales centrados en la experiencia del usuario, asegurando que cada diseño sea funcional, atractivo y eficiente.';
@@ -30,8 +30,8 @@ export default function ProfileScreen() {
         performanceScore="4.7"
         certificatesCount="3"
         isEditable={false}
-        onEditProfile={() => router.push('/student/editProfile')}
-        onViewCertificates={() => router.push('/student/certificates')}
+        onEditProfile={() => navigation.navigate('Main', { screen: 'EditProfile' })}
+        onViewCertificates={() => navigation.navigate('Certificates')}
       />
 
       {/* Sección con AboutMe, GoodAt y Skills */}
@@ -46,11 +46,11 @@ export default function ProfileScreen() {
       <View style={styles.buttonRow}>
         <ButtonStyle2
           title="Editar Perfil"
-          onPress={() => router.push('/student/editProfile')}
+          onPress={() => navigation.navigate('EditProfile')}
         />
         <ButtonStyle2
           title="Ver Proyectos"
-          onPress={() => router.push('/student/projects')}
+          onPress={() => navigation.navigate('Projects')}
         />
       </View>
     </ScrollView>
@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
   },
   buttonRow: {
     flexDirection: 'row',
-    justifyContent: 'space-around', // Espaciado uniforme entre los botones
+    justifyContent: 'space-around',
     marginTop: 24,
   },
 });

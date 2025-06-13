@@ -1,14 +1,22 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
-import Animated, { useSharedValue, useAnimatedStyle, withTiming } from 'react-native-reanimated';
 import InputField from '@/components/ui/InputField';
 import CustomButton from '@/components/ui/CustomButton';
 import Colors from '@/constants/Colors';
-import { router, useLocalSearchParams } from 'expo-router';
+
 import { registerUser } from '@/services/register/registerService';
 import { universidades, carreras, idiomas, nivelIdioma } from '@/data/registo';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { AuthStackParamList } from '@/navigation/types';
+import { useNavigation, useRoute } from '@react-navigation/native';
+
+type RegisterStep3NavProp = NativeStackNavigationProp<AuthStackParamList, 'RegisterStep3'>;
 
 export default function RegisterStep3Screen() {
+  const navigation = useNavigation<RegisterStep3NavProp>();
+  const route = useRoute();
+  const { fullName, email, phone, password, role, skills } = route.params as AuthStackParamList['RegisterStep3'];
+
   const [githubLink, setGithubLink] = useState('');
   const [selectedUniversity, setSelectedUniversity] = useState('');
   const [selectedCareer, setSelectedCareer] = useState('');
@@ -18,8 +26,7 @@ export default function RegisterStep3Screen() {
   const [selectedLanguage, setSelectedLanguage] = useState<number | null>(null);
   const [selectedLevel, setSelectedLevel] = useState<string | null>(null);
 
-  const { fullName, email, phone, password } = useLocalSearchParams();
-
+  
   const handleAddLanguage = () => {
     if (selectedLanguage && selectedLevel) {
       const newLanguage = {
@@ -49,16 +56,16 @@ export default function RegisterStep3Screen() {
   };
 
   const handleFinalize = async () => {
-    const [firstName, lastName] = (fullName as string).split(' ', 2);
+    const [firstName, lastName] = fullName.split(' ', 2);
     const data = {
       email,
       password,
       estudiante: {
-        nombre: firstName || '',
-        apellido: lastName || '',
+        nombre: firstName,
+        apellido: lastName,
         telefono: phone,
-        idUniversidad: parseInt(selectedUniversity) || 0,
-        idCarrera: parseInt(selectedCareer) || 0,
+        idUniversidad: parseInt(selectedUniversity),
+        idCarrera: parseInt(selectedCareer),
         idiomas: selectedLanguages,
       },
     };
@@ -66,15 +73,11 @@ export default function RegisterStep3Screen() {
     console.log('Enviando datos al backend:', data);
     console.log('Cuerpo enviado al backend:', JSON.stringify(data, null, 2));
 
-    // descomentar para hacer puebras con el backend
     try {
-      const response = await registerUser(data);
-      console.log('Usuario registrado con éxito:', response);
+      await registerUser(data);
       alert('Registro exitoso');
-      // nos manda a la vista del login
-      router.replace('/auth/login');
+      navigation.replace('Login');
     } catch (error: any) {
-      console.error('Error al registrar el usuario:', error.message);
       alert(error.message || 'Error al registrar el usuario');
     }
   };

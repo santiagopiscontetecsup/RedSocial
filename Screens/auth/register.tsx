@@ -6,36 +6,37 @@ import {
   Image,
   ScrollView,
 } from 'react-native';
-import { useRouter } from 'expo-router';
+
 import InputField from '@/components/ui/InputField';
 import CustomButton from '@/components/ui/CustomButton';
-import Colors from '@/constants/Colors';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { AuthStackParamList } from '@/navigation/types';
+import { useNavigation } from '@react-navigation/native';
 
+
+
+type RegisterScreenNavigationProp = NativeStackNavigationProp<AuthStackParamList, 'Register'>;
 
 export default function RegisterScreen() {
-  const router = useRouter();
+  const navigation = useNavigation<RegisterScreenNavigationProp>();
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
+   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   
-  const handleRegister = () => {
-    console.log('Registering user...');
-    router.push({
-      pathname: '/auth/register/student/registerStep2',
-      params: {
-        fullName,
-        email,
-        phone,
-        password,
-      },
-    });
-    
-  };
 
+  const handleRegister = () => {
+    navigation.navigate('RegisterStep2', {
+      fullName,
+      email,
+      phone,
+      password,
+    });
+  };
+  
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Registro</Text>

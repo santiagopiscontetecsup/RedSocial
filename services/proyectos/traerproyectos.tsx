@@ -12,6 +12,8 @@ export interface Proyecto {
   fechaLimite: string;
   tipoRecompensa: string;
   habilidades: Habilidad[];
+  empresa?: string; // Agregado
+  postulantes?: { idEstudiante: number }[]; 
 }
 
 export const traerProyectos = async (): Promise<Proyecto[]> => {

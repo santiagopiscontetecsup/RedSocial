@@ -1,5 +1,14 @@
-// filepath: c:\6 Semestre\Nueva carpeta\RedSocial\context\AuthContext.tsx
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+// context/AuthContext.tsx
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+} from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { loginUser } from '@/services/login/loginService';
+import { getStudentIdFromToken } from '@/services/login/tokenService';
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -19,11 +28,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
+  // Verifica si hay un token almacenado al inicio
   const checkAuthState = useCallback(async () => {
     try {
-      // Simular verificación de token
-      const fakeToken = false; // Cambiar a true solo para pruebas
-      setIsAuthenticated(fakeToken);
+      const token = await AsyncStorage.getItem('token');
+      if (token) {
+        // Puedes agregar validación del token aquí si lo deseas
+        setIsAuthenticated(true);
+      } else {
+        setIsAuthenticated(false);
+      }
+    } catch (error) {
+      console.error('Error comprobando el estado de autenticación:', error);
+      setIsAuthenticated(false);
     } finally {
       setIsLoading(false);
     }
@@ -34,26 +51,41 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, [checkAuthState]);
 
   const login = useCallback(async (email: string, password: string) => {
-    setIsLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    if (email === 'testuser@example.com' && password === 'password123') {
+    try {
+      setIsLoading(true);
+
+      const response = await loginUser({ email, password });
+
+      const token = response.token;
+      const studentId = getStudentIdFromToken(token);
+
+      await AsyncStorage.setItem('token', token);
+      await AsyncStorage.setItem('studentId', studentId || '');
+
       setIsAuthenticated(true);
-    } else {
-      alert('Credenciales incorrectas');
+    } catch (error: any) {
+      alert(error.message || 'Error al iniciar sesión');
+      setIsAuthenticated(false);
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   }, []);
 
   const logout = useCallback(async () => {
-    setIsLoading(true);
-    // Simular logout
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    setIsAuthenticated(false);
-    setIsLoading(false);
+    try {
+      setIsLoading(true);
+      await AsyncStorage.removeItem('token');
+      await AsyncStorage.removeItem('studentId');
+      setIsAuthenticated(false);
+    } finally {
+      setIsLoading(false);
+    }
   }, []);
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, isLoading, login, logout }}>
+    <AuthContext.Provider
+      value={{ isAuthenticated, isLoading, login, logout }}
+    >
       {children}
     </AuthContext.Provider>
   );

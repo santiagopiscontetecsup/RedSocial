@@ -1,16 +1,19 @@
 import React from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { MainStackParamList, Proyecto } from '@/navigation/types';
 import { useProjectContext } from '@/context/ProjectContext';
-import { useRouter } from 'expo-router';
+ // Asegúrate que el tipo Proyecto esté definido correctamente
 
 export default function MisProyectosScreen() {
   const { proyectosAceptados } = useProjectContext();
-  const router = useRouter();
+  const navigation = useNavigation<NativeStackNavigationProp<MainStackParamList>>();
 
   const pendientes = proyectosAceptados.filter(p => !p.entregado);
   const entregados = proyectosAceptados.filter(p => p.entregado);
 
-  const renderItem = (item: any) => (
+  const renderItem = (item: Proyecto) => (
     <View style={styles.card} key={item.id}>
       <Text style={styles.title}>{item.title}</Text>
       <Text style={styles.estado}>
@@ -18,7 +21,7 @@ export default function MisProyectosScreen() {
       </Text>
       <TouchableOpacity
         style={styles.button}
-        onPress={() => router.push(`/student/buscar-id/${item.id}`)}
+        onPress={() => navigation.navigate('DetalleReto', { proyecto: item })}
       >
         <Text style={styles.buttonText}>Ver detalles</Text>
       </TouchableOpacity>
@@ -52,39 +55,37 @@ export default function MisProyectosScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
     padding: 16,
   },
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    marginVertical: 12,
+    marginBottom: 10,
   },
   card: {
-    backgroundColor: '#f4f4f4',
     padding: 16,
+    backgroundColor: '#eee',
     borderRadius: 12,
     marginBottom: 12,
   },
   title: {
     fontSize: 16,
     fontWeight: '600',
-    marginBottom: 6,
   },
   estado: {
+    marginTop: 4,
     fontSize: 14,
     color: '#555',
-    marginBottom: 10,
   },
   button: {
-    alignSelf: 'flex-start',
-    backgroundColor: '#007BFF',
-    paddingVertical: 6,
-    paddingHorizontal: 14,
-    borderRadius: 6,
+    marginTop: 10,
+    backgroundColor: '#4B7BE5',
+    paddingVertical: 8,
+    borderRadius: 8,
   },
   buttonText: {
     color: '#fff',
-    fontWeight: '600',
+    textAlign: 'center',
+    fontWeight: 'bold',
   },
 });

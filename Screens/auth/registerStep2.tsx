@@ -1,13 +1,22 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput } from 'react-native';
 import Animated, { useSharedValue, useAnimatedStyle, withTiming } from 'react-native-reanimated';
-import { useRouter } from 'expo-router';
 import CustomButton from '@/components/ui/CustomButton';
 import Colors from '@/constants/Colors';
-import { useLocalSearchParams } from 'expo-router';
+
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { AuthStackParamList } from '@/navigation/types';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+
+type Step2NavProp = NativeStackNavigationProp<AuthStackParamList, 'RegisterStep2'>;
+type Step2RouteProp = RouteProp<AuthStackParamList, 'RegisterStep2'>;
+
 
 export default function RegisterStep2Screen() {
-  const router = useRouter();
+   const navigation = useNavigation<Step2NavProp>();
+  const route = useRoute<Step2RouteProp>();
+  const { fullName, email, phone, password } = route.params;
+
   const [selectedRole, setSelectedRole] = useState('');
   const [customRole, setCustomRole] = useState('');
   const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
@@ -16,7 +25,6 @@ export default function RegisterStep2Screen() {
   const roles = ['Backend', 'FrontEnd', 'Full Stack', 'Desarrollador Móvil', 'Big Data', 'Otro'];
   const skills = ['Swift', 'Java', 'Python', '.NET', 'React', 'Otro'];
 
-  const { fullName, email, phone, password } = useLocalSearchParams();
 
   const toggleSkill = (skill: string) => {
     setSelectedSkills((prev) =>
@@ -30,17 +38,13 @@ export default function RegisterStep2Screen() {
       ? [...selectedSkills.filter((s) => s !== 'Otro'), customSkill]
       : selectedSkills;
 
-    // Navegar a RegisterStep3 con los datos seleccionados
-    router.push({
-      pathname: '/auth/register/student/registerStep3',
-      params: {
-        fullName,
-        email,
-        phone,
-        password,
-        role: finalRole,
-        skills: JSON.stringify(finalSkills),
-      },
+    navigation.navigate('RegisterStep3', {
+      fullName,
+      email,
+      phone,
+      password,
+      role: finalRole,
+      skills: JSON.stringify(finalSkills),
     });
   };
 
