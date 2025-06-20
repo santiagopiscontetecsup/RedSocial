@@ -19,16 +19,22 @@ export default {
       supportsTablet: true
     },
     android: {
+      package: 'com.fullchamba.redsocial', // 👈 Usa tu dominio al revés o cualquier identificador único
       adaptiveIcon: {
         foregroundImage: './assets/images/adaptive-icon.png',
         backgroundColor: '#ffffff'
       }
     },
+
     web: {
       favicon: './assets/images/favicon.png'
     },
+    owner: 'kevin3m', // 
     extra: {
-      API_BASE_URL: process.env.API_BASE_URL
+      API_BASE_URL: process.env.API_BASE_URL,
+      eas: {
+        projectId: 'd916c8be-fc6f-4594-93fd-b25ab6bd928f' // 👈 Agregado aquí
+      }
     }
   }
 }
