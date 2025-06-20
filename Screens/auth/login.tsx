@@ -18,6 +18,20 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AuthStackParamList } from '@/navigation/types';
 
 
+// Función para validar email
+  function isValidEmail(email: string): boolean {
+    // No permite números, debe tener @ y terminar en .com, .edu o .pe
+    const emailRegex = /^[A-Za-z._%+-]+@[A-Za-z.-]+\.(com|edu|pe)$/i;
+    // No debe contener ningún número
+    const hasNumber = /\d/;
+    return emailRegex.test(email) && !hasNumber.test(email);
+  }
+
+  // Función para validar password
+  function isValidPassword(password: string): boolean {
+    return password.length >= 6;
+  }
+
 type NavigationProp = NativeStackNavigationProp<AuthStackParamList, 'Login'>;
 
 export default function LoginScreen() {
@@ -29,12 +43,34 @@ export default function LoginScreen() {
   const [isLoading, setIsLoading] = useState(false);
 
 
-  const handleLogin = async () => {
+  
+
+   const handleLogin = async () => {
+    // Validaciones
+    if (!isValidEmail(email)) {
+      Alert.alert(
+        'Email inválido',
+        'El email debe ser válido (ej: usuario@dominio.com) y no contener números.'
+      );
+      return;
+    }
+
+    if (!isValidPassword(password)) {
+      Alert.alert(
+        'Contraseña inválida',
+        'La contraseña debe tener al menos 6 caracteres.'
+      );
+      return;
+    }
+
     try {
+      setIsLoading(true);
       await login(email, password);
-      // El cambio a MainStack lo hará automáticamente tu RootNavigator
     } catch (error) {
       console.error(error);
+      Alert.alert('Error', 'No se pudo iniciar sesión. Verifica tus datos.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
