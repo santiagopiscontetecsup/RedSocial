@@ -12,7 +12,6 @@ type Step2NavProp = NativeStackNavigationProp<AuthStackParamList, 'RegisterStep2
 type Step2RouteProp = RouteProp<AuthStackParamList, 'RegisterStep2'>;
 
 
-// ...existing code...
 export default function RegisterStep2Screen() {
   const navigation = useNavigation<Step2NavProp>();
   const route = useRoute<Step2RouteProp>();
@@ -41,8 +40,7 @@ export default function RegisterStep2Screen() {
       email,
       phone,
       password,
-      role: '', // Eliminado, pero se mantiene por compatibilidad de params
-      skills: JSON.stringify(selectedSkills),
+      skills: selectedSkills,
     });
   };
 

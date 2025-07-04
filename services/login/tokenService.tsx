@@ -25,3 +25,14 @@ export const getStudentIdFromToken = (token: string): string | null => {
     return null;
   }
 };
+
+export const getUserNameFromToken = (token: string): string | null => {
+  try {
+    const decoded: DecodedToken = jwtDecode<DecodedToken>(token);
+    // Si el nombre está en el claim 'sub' (ajusta si tu backend usa otro claim)
+    return decoded.sub || null;
+  } catch (error) {
+    console.error('Error al decodificar el token:', error);
+    return null;
+  }
+};

@@ -1,13 +1,32 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Colors from '@/constants/Colors';
 import { useAuth } from '@/context/AuthContext';
-import { useNavigation, CommonActions } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { obtenerPerfilEstudiante } from '@/services/login/perfilService';
 
 export default function MenuScreen() {
   const { logout } = useAuth();
   const navigation = useNavigation();
+
+  const [userName, setUserName] = useState<string>('Usuario');
+
+  useEffect(() => {
+    const fetchUserName = async () => {
+      const studentId = await AsyncStorage.getItem('studentId');
+      if (studentId) {
+        try {
+          const perfil = await obtenerPerfilEstudiante(Number(studentId));
+          setUserName(`${perfil.nombre} ${perfil.apellido}`);
+        } catch (error) {
+          setUserName('Usuario');
+        }
+      }
+    };
+    fetchUserName();
+  }, []);
 
   const handleLogout = async () => {
     await logout();
@@ -31,7 +50,7 @@ export default function MenuScreen() {
           }}
           style={styles.logo}
         />
-        <Text style={styles.headerText}>Bienvenido, Kevin 🍺</Text>
+        <Text style={styles.headerText}>Bienvenido, {userName}</Text>
       </View>
 
       <View style={styles.menuContainer}>

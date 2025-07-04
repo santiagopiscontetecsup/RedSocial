@@ -1,20 +1,41 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, ScrollView, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import ProfileHeader from '@/components/ui/ProfileHeader';
 import ButtonStyle2 from '@/components/ui/ButtonStyle2';
 import ProfileDetails from '@/components/ui/ProfileDetails';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { obtenerPerfilEstudiante, PerfilEstudiante } from '@/services/login/perfilService';
 
 export default function ProfileScreen() {
   const navigation = useNavigation();
+  const [userName, setUserName] = useState('Usuario');
+  const [perfil, setPerfil] = useState<PerfilEstudiante | null>(null);
+
+  useEffect(() => {
+    const fetchPerfil = async () => {
+      try {
+        const studentId = await AsyncStorage.getItem('studentId');
+        if (studentId) {
+          const perfilData = await obtenerPerfilEstudiante(Number(studentId));
+          setPerfil(perfilData);
+          setUserName(`${perfilData.nombre} ${perfilData.apellido}`);
+        }
+      } catch (error) {
+        console.error('Error al obtener el perfil:', error);
+      }
+    };
+    fetchPerfil();
+  }, []);
 
   const aboutMe =
+    perfil?.acercaDe ||
     'Soy Diseñador UX/UI con experiencia en la creación de interfaces intuitivas y soluciones innovadoras. Me apasiona desarrollar productos digitales centrados en la experiencia del usuario, asegurando que cada diseño sea funcional, atractivo y eficiente.';
 
   const goodAt =
     'Identificar problemas de usabilidad y transformarlos en soluciones visuales claras y funcionales. Me adapto rápido a nuevas herramientas y disfruto colaborar en equipos creativos.';
 
-  const skills = [
+  const skills = perfil?.habilidades?.map((h) => h.nombre) || [
     'Diseño UX/UI',
     'Prototipado en Figma',
     'Investigación de usuarios',
@@ -25,8 +46,8 @@ export default function ProfileScreen() {
     <ScrollView style={styles.container}>
       <ProfileHeader
         backgroundImage="https://www1.tecsup.edu.pe/sites/default/files/branches/image_mini/lima_0.png"
-        profileImage="https://www1.tecsup.edu.pe/sites/default/files/branches/image_mini/lima_0.png"
-        userName="Alex Rodríguez"
+        profileImage={perfil?.avatar || "https://www1.tecsup.edu.pe/sites/default/files/branches/image_mini/lima_0.png"}
+        userName={userName}
         performanceScore="4.7"
         certificatesCount="3"
         isEditable={false}

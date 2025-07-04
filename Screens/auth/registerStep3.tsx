@@ -16,7 +16,7 @@ type RegisterStep3NavProp = NativeStackNavigationProp<AuthStackParamList, 'Regis
 export default function RegisterStep3Screen() {
   const navigation = useNavigation<RegisterStep3NavProp>();
   const route = useRoute();
-  const { fullName, email, phone, password, role, skills } = route.params as AuthStackParamList['RegisterStep3'];
+  const { fullName, email, phone, password, skills } = route.params as AuthStackParamList['RegisterStep3'];
 
   const [selectedUniversity, setSelectedUniversity] = useState('');
   const [selectedCareer, setSelectedCareer] = useState('');
@@ -83,6 +83,7 @@ export default function RegisterStep3Screen() {
         nombre: firstName,
         apellido: lastName,
         telefono: phone,
+        sskills: skills, // Asumiendo que skills es un string JSON
         idUniversidad: parseInt(selectedUniversity),
         idCarrera: parseInt(selectedCareer),
         idiomas: selectedLanguages,

@@ -14,13 +14,13 @@ export type AuthStackParamList = {
     password: string;
   };
   RegisterStep3: {
-    fullName: string;
-    email: string;
-    phone: string;
-    password: string;
-    role: string;
-    skills: string;
-  };
+  fullName: string;
+  email: string;
+  phone: string;
+  password: string;
+  skills: number[]; // ✅ ahora es array, no string
+};
+
 };
 
 // navigation/types.d.ts
