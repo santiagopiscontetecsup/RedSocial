@@ -2,11 +2,15 @@ import api from '../api'; // Usa la configuración de Axios con baseURL
 
 export interface Notificacion {
   id: number;
-  idProyecto: number; // Agregado
-  mensaje: string; // Agregado
-  fechaEnvio: string; // Agregado
-  leido: boolean; // Agregado si es necesario
+  idSolicitud: number;
+  idReceptor: number;
+  tipoMensaje: string;
+  mensaje: string;
+  fechaEnvio: string;
+  leido: boolean;
+  idProyecto: number;
 }
+
 export const obtenerNotificaciones = async (idEstudiante: number): Promise<Notificacion[]> => {
   try {
     // Realiza la solicitud GET al endpoint con el ID del estudiante

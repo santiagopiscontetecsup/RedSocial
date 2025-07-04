@@ -57,17 +57,17 @@ export default function NotificationsScreen() {
     });
 
     // Filtra para que solo quede una notificación por empresa (la más reciente)
-    const uniqueByEmpresa = Object.values(
-      formattedData.reduce((acc, curr) => {
-        if (
-          !acc[curr.empresa] ||
-          new Date(curr.time).getTime() > new Date(acc[curr.empresa].time).getTime()
-        ) {
-          acc[curr.empresa] = curr;
-        }
-        return acc;
-      }, {} as Record<string, any>)
-    );
+    // const uniqueByEmpresa = Object.values(
+    //   formattedData.reduce((acc, curr) => {
+    //     if (
+    //       !acc[curr.empresa] ||
+    //       new Date(curr.time).getTime() > new Date(acc[curr.empresa].time).getTime()
+    //     ) {
+    //       acc[curr.empresa] = curr;
+    //     }
+    //     return acc;
+    //   }, {} as Record<string, any>)
+    // );
 
     setNotificaciones(formattedData);
   } catch (err: any) {
