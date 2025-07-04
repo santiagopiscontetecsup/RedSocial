@@ -78,18 +78,17 @@ const DetalleReto = () => {
       setModalVisible(false);
       setResumenHabilidades('');
       setYaPostulado(true); // Actualiza el estado a "postulado"
-    } catch (err: any) {
+    }  catch (err: any) {
       console.error('Error al postularse:', err);
 
-      // Verifica si el error es porque ya está postulado
-      if (err.response?.data?.mensaje === 'Ya te has postulado a este proyecto.') {
+      if (err.message === 'Ya te has postulado a este proyecto.') {
         Alert.alert(
           'Ya estás postulado',
           'Ya has postulado a este proyecto. Espera una respuesta por parte de la empresa.'
         );
-        setYaPostulado(true); // Actualiza el estado a "postulado"
+        setYaPostulado(true);
       } else {
-        Alert.alert('Error', 'No se pudo enviar la postulación. Intenta nuevamente.');
+        Alert.alert('Error', err.message || 'No se pudo enviar la postulación. Intenta nuevamente.');
       }
     }
   };
@@ -183,6 +182,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     backgroundColor: '#f8f9fa',
     padding: 24,
+    paddingTop: 48, // Agrega un margen superior amplio
   },
   header: {
     marginBottom: 24,

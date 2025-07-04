@@ -42,7 +42,7 @@ export default function RegisterScreen() {
       <Text style={styles.title}>Registro</Text>
 
       <Image
-        source={require('@/assets/images/react-logo.png')}
+        source={require('@/assets/images/registro.png')}
         style={styles.image}
         resizeMode="contain"
       />
@@ -100,9 +100,11 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   image: {
-    width: 200,
-    height: 200,
+    width: 160,
+    height: 160,
     marginVertical: 16,
+    borderRadius: 80, // La mitad del width/height para que sea circular
+    overflow: 'hidden', // Asegura que la imagen se recorte circular
   },
   inputContainer: {
     width: '100%',

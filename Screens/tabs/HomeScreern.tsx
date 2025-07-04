@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
     paddingTop: 24,
   },
   searchBar: {
-    marginTop: 8,
+    marginTop: 32, // Aumenta el espacio superior
     borderRadius: 12,
     elevation: 2,
     shadowColor: '#000',

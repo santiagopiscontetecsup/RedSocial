@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     borderRadius: 12,
     alignItems: 'center',
-    width: '100%',
+    width: '100%', // Asegura que el botón ocupe todo el ancho disponible
     marginTop: 10,
   },
   text: {

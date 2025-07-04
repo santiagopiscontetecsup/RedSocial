@@ -12,53 +12,37 @@ type Step2NavProp = NativeStackNavigationProp<AuthStackParamList, 'RegisterStep2
 type Step2RouteProp = RouteProp<AuthStackParamList, 'RegisterStep2'>;
 
 
+// ...existing code...
 export default function RegisterStep2Screen() {
-   const navigation = useNavigation<Step2NavProp>();
+  const navigation = useNavigation<Step2NavProp>();
   const route = useRoute<Step2RouteProp>();
   const { fullName, email, phone, password } = route.params;
 
-  const [selectedRole, setSelectedRole] = useState('');
-  const [customRole, setCustomRole] = useState('');
-  const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
-  const [customSkill, setCustomSkill] = useState('');
+  // Solo permite seleccionar C# y Figma (id: 1 y 2)
+  const skills = [
+    { id: 1, name: 'C#' },
+    { id: 2, name: 'Figma' },
+  ];
+  const [selectedSkills, setSelectedSkills] = useState<number[]>([]);
 
-  const roles = ['Backend', 'FrontEnd', 'Full Stack', 'Desarrollador Móvil', 'Big Data', 'Otro'];
-  const skills = ['Swift', 'Java', 'Python', '.NET', 'React', 'Otro'];
-
-
-  const toggleSkill = (skill: string) => {
+  const toggleSkill = (id: number) => {
     setSelectedSkills((prev) =>
-      prev.includes(skill) ? prev.filter((s) => s !== skill) : [...prev, skill]
+      prev.includes(id)
+        ? prev.filter((s) => s !== id)
+        : prev.length < 2
+        ? [...prev, id]
+        : prev
     );
   };
 
   const handleContinue = () => {
-    const finalRole = selectedRole === 'Otro' ? customRole : selectedRole;
-    const finalSkills = selectedSkills.includes('Otro')
-      ? [...selectedSkills.filter((s) => s !== 'Otro'), customSkill]
-      : selectedSkills;
-
     navigation.navigate('RegisterStep3', {
       fullName,
       email,
       phone,
       password,
-      role: finalRole,
-      skills: JSON.stringify(finalSkills),
-    });
-  };
-
-  // Animación para los botones de roles
-  const roleAnimation = useSharedValue(1);
-  const roleAnimatedStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: roleAnimation.value }],
-    opacity: roleAnimation.value,
-  }));
-
-  const handleRolePress = (role: string) => {
-    setSelectedRole(role);
-    roleAnimation.value = withTiming(1.1, { duration: 200 }, () => {
-      roleAnimation.value = withTiming(1, { duration: 200 });
+      role: '', // Eliminado, pero se mantiene por compatibilidad de params
+      skills: JSON.stringify(selectedSkills),
     });
   };
 
@@ -69,8 +53,8 @@ export default function RegisterStep2Screen() {
     opacity: skillAnimation.value,
   }));
 
-  const handleSkillPress = (skill: string) => {
-    toggleSkill(skill);
+  const handleSkillPress = (id: number) => {
+    toggleSkill(id);
     skillAnimation.value = withTiming(1.1, { duration: 200 }, () => {
       skillAnimation.value = withTiming(1, { duration: 200 });
     });
@@ -80,91 +64,56 @@ export default function RegisterStep2Screen() {
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Cuéntanos más acerca de ti...</Text>
 
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Rol</Text>
-        <Text style={styles.sectionSubtitle}>
-          ¿Qué rol desempeñas en el área de Programación y Tecnología?
-        </Text>
-        <View style={styles.optionsContainer}>
-          {roles.map((role) => (
-            <Animated.View key={role} style={roleAnimatedStyle}>
-              <TouchableOpacity
-                style={[
-                  styles.optionButton,
-                  selectedRole === role && styles.optionButtonSelected,
-                ]}
-                onPress={() => handleRolePress(role)}
-              >
-                <Text
-                  style={[
-                    styles.optionText,
-                    selectedRole === role && styles.optionTextSelected,
-                  ]}
-                >
-                  {role}
-                </Text>
-              </TouchableOpacity>
-            </Animated.View>
-          ))}
-        </View>
-        {selectedRole === 'Otro' && (
-          <TextInput
-            style={styles.input}
-            placeholder="Especifica tu rol"
-            value={customRole}
-            onChangeText={setCustomRole}
-          />
-        )}
-      </View>
-
+      {/* Sección de habilidades */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Habilidades</Text>
         <Text style={styles.sectionSubtitle}>
-          ¿Cuáles son tus habilidades en las que te destacas más?
+          Selecciona tus habilidades principales (máximo 2)
         </Text>
         <View style={styles.optionsContainer}>
           {skills.map((skill) => (
-            <Animated.View key={skill} style={skillAnimatedStyle}>
+            <Animated.View key={skill.id} style={skillAnimatedStyle}>
               <TouchableOpacity
                 style={[
                   styles.optionButton,
-                  selectedSkills.includes(skill) && styles.optionButtonSelected,
+                  selectedSkills.includes(skill.id) && styles.optionButtonSelected,
                 ]}
-                onPress={() => handleSkillPress(skill)}
+                onPress={() => handleSkillPress(skill.id)}
               >
                 <Text
                   style={[
                     styles.optionText,
-                    selectedSkills.includes(skill) && styles.optionTextSelected,
+                    selectedSkills.includes(skill.id) && styles.optionTextSelected,
                   ]}
                 >
-                  {skill}
+                  {skill.name}
                 </Text>
               </TouchableOpacity>
             </Animated.View>
           ))}
         </View>
-        {selectedSkills.includes('Otro') && (
-          <TextInput
-            style={styles.input}
-            placeholder="Especifica tu habilidad"
-            value={customSkill}
-            onChangeText={setCustomSkill}
-          />
-        )}
       </View>
 
       <CustomButton title="Continuar" onPress={handleContinue} />
     </ScrollView>
   );
 }
+// ...existing code...
 
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    padding: 24,
     backgroundColor: '#fff',
-    marginTop: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    minHeight: '100%',
+    paddingHorizontal: 24, // Agrega margen a los lados
+  },
+  innerContainer: {
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 40,
   },
   title: {
     fontSize: 22,
@@ -174,21 +123,27 @@ const styles = StyleSheet.create({
   },
   section: {
     marginBottom: 20,
+    width: '100%',
+    alignItems: 'center',
   },
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 8,
+    textAlign: 'center',
   },
   sectionSubtitle: {
     fontSize: 14,
     color: Colors.gray,
     marginBottom: 12,
+    textAlign: 'center',
   },
   optionsContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 10,
+    justifyContent: 'center',
+    width: '100%',
   },
   optionButton: {
     borderWidth: 1,
@@ -197,6 +152,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 16,
     marginBottom: 10,
+    marginHorizontal: 5,
   },
   optionButtonSelected: {
     backgroundColor: Colors.primary,

@@ -83,7 +83,7 @@ export default function LoginScreen() {
       <Text style={styles.title}>Inicio de Sesion</Text>
 
       <Image
-        source={require('@/assets/images/logo.png')}
+        source={require('@/assets/images/fullchambalogo.jpg')}
         style={styles.image}
         resizeMode="contain"
       />
@@ -155,6 +155,8 @@ const styles = StyleSheet.create({
     width: 200,
     height: 200,
     marginVertical: 16,
+    borderRadius: 80,
+    overflow: 'hidden',
   },
   inputContainer: {
     width: '100%',

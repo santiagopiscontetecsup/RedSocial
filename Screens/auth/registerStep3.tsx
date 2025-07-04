@@ -5,7 +5,8 @@ import CustomButton from '@/components/ui/CustomButton';
 import Colors from '@/constants/Colors';
 
 import { registerUser } from '@/services/register/registerService';
-import { universidades, carreras, idiomas, nivelIdioma } from '@/data/registo';
+// Ya no importamos universidades, carreras, idiomas, nivelIdioma completos
+
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AuthStackParamList } from '@/navigation/types';
 import { useNavigation, useRoute } from '@react-navigation/native';
@@ -17,7 +18,6 @@ export default function RegisterStep3Screen() {
   const route = useRoute();
   const { fullName, email, phone, password, role, skills } = route.params as AuthStackParamList['RegisterStep3'];
 
-  const [githubLink, setGithubLink] = useState('');
   const [selectedUniversity, setSelectedUniversity] = useState('');
   const [selectedCareer, setSelectedCareer] = useState('');
   const [selectedLanguages, setSelectedLanguages] = useState<
@@ -26,7 +26,26 @@ export default function RegisterStep3Screen() {
   const [selectedLanguage, setSelectedLanguage] = useState<number | null>(null);
   const [selectedLevel, setSelectedLevel] = useState<string | null>(null);
 
-  
+  // Solo las opciones requeridas
+  const universidades = [
+    { id: 1, nombre: 'San Marcos' },
+    { id: 2, nombre: 'Pontificia Católica' },
+  ];
+  const carreras = [
+    { id: 1, nombre: 'Sistemas' },
+    { id: 2, nombre: 'Industrial' },
+  ];
+  const idiomas = [
+    { id: 1, nombre: 'Inglés' },
+    { id: 2, nombre: 'Portugués' },
+  ];
+  // Puedes mantener nivelIdioma si lo usas igual que antes
+  const nivelIdioma = [
+    { id: 1, nombre: 'Básico' },
+    { id: 2, nombre: 'Intermedio' },
+    { id: 3, nombre: 'Avanzado' },
+  ];
+
   const handleAddLanguage = () => {
     if (selectedLanguage && selectedLevel) {
       const newLanguage = {
@@ -70,9 +89,6 @@ export default function RegisterStep3Screen() {
       },
     };
 
-    console.log('Enviando datos al backend:', data);
-    console.log('Cuerpo enviado al backend:', JSON.stringify(data, null, 2));
-
     try {
       await registerUser(data);
       alert('Registro exitoso');
@@ -86,18 +102,7 @@ export default function RegisterStep3Screen() {
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Perfil Profesional</Text>
 
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Sobre tus proyectos</Text>
-        <Text style={styles.sectionSubtitle}>
-          Ingresa tu link de Github para conocer tus proyectos
-        </Text>
-        <InputField
-          placeholder="Ejm: https://github.com/He4rttt"
-          value={githubLink}
-          onChangeText={setGithubLink}
-        />
-      </View>
-
+      {/* Universidad o Instituto */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Universidad o Instituto</Text>
         <Text style={styles.sectionSubtitle}>Selecciona tu universidad</Text>
@@ -126,6 +131,7 @@ export default function RegisterStep3Screen() {
         </View>
       </View>
 
+      {/* Carrera */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Carrera</Text>
         <Text style={styles.sectionSubtitle}>Selecciona tu carrera</Text>
@@ -154,6 +160,7 @@ export default function RegisterStep3Screen() {
         </View>
       </View>
 
+      {/* Idiomas */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Idiomas</Text>
         <Text style={styles.sectionSubtitle}>
@@ -180,10 +187,8 @@ export default function RegisterStep3Screen() {
             </TouchableOpacity>
           ))}
         </View>
-        
 
         {selectedLanguage && (
-          
           <View style={styles.optionsContainer}>
             {nivelIdioma.map((nivel) => (
               <TouchableOpacity
@@ -238,8 +243,18 @@ export default function RegisterStep3Screen() {
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    padding: 24,
+    minHeight: '100%', // Asegura que ocupe toda la pantalla
     backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center', // Centra verticalmente
+    paddingVertical: 24,
+    paddingHorizontal: 16,
+  },
+  innerContainer: {
+    width: '100%',
+    maxWidth: 400,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   title: {
     fontSize: 22,
@@ -249,21 +264,28 @@ const styles = StyleSheet.create({
   },
   section: {
     marginBottom: 20,
+    width: '100%',
+    alignItems: 'center',
   },
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 8,
+    textAlign: 'center',
   },
   sectionSubtitle: {
     fontSize: 14,
     color: Colors.gray,
     marginBottom: 12,
+    textAlign: 'center',
   },
   optionsContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 10,
+    justifyContent: 'center',
+    width: '100%',
+    marginBottom: 8,
   },
   optionButton: {
     borderWidth: 1,
@@ -272,6 +294,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 16,
     marginBottom: 10,
+    marginHorizontal: 5,
   },
   optionButtonSelected: {
     backgroundColor: Colors.primary,
@@ -279,12 +302,15 @@ const styles = StyleSheet.create({
   optionText: {
     fontSize: 14,
     color: Colors.primary,
+    textAlign: 'center',
   },
   optionTextSelected: {
     color: '#fff',
   },
   selectedLanguagesContainer: {
     marginTop: 16,
+    width: '100%',
+    alignItems: 'center',
   },
   selectedLanguage: {
     flexDirection: 'row',
@@ -294,6 +320,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 10,
     marginBottom: 8,
+    width: '100%',
   },
   selectedLanguageText: {
     fontSize: 14,

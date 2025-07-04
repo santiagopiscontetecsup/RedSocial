@@ -1,10 +1,10 @@
 export default {
   expo: {
-    name: 'RedSocial',
+    name: 'Full Chamba',
     slug: 'RedSocial',
     version: '1.0.0',
     orientation: 'portrait',
-    icon: './assets/images/icon.png',
+    icon: './assets/images/iconFullChamba.png',
     scheme: 'myapp',
     userInterfaceStyle: 'automatic',
     splash: {
